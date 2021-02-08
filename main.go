@@ -1,7 +1,9 @@
 package main
 
-import "./Servidor"
+import (
+	"./Servidor"
+)
 
 func main()  {
-	Servidor.Iniciar()
+	Servidor.Leer()
 }
