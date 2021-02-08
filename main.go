@@ -5,5 +5,5 @@ import (
 )
 
 func main()  {
-	Servidor.Leer()
+	Servidor.Iniciar()
 }

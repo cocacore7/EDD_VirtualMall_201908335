@@ -14,13 +14,16 @@ func Inicial(w http.ResponseWriter, r *http.Request){
 }
 
 func agregar(w http.ResponseWriter, r *http.Request){
-	var data Data
+	var data Datos
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil{
 		fmt.Fprintf(w, "Error al insertar")
 	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusCreated)
 	json.Unmarshal(body, &data)
 	json.NewEncoder(w).Encode(data)
+	Leer(data)
 }
 
 func Iniciar(){
