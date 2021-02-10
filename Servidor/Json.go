@@ -109,3 +109,7 @@ func Crear(data Datos){
 		vec[i] = vec[i].ordenar()
 	}
 }
+
+func grafico1(){
+	graficoCompleto(vec)
+}
