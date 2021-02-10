@@ -1,6 +1,9 @@
 package Servidor
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 type tienda struct {
 	nombre      string
@@ -17,6 +20,7 @@ type nodo struct {
 type lista struct {
 	primero  *nodo
 	ultimo   *nodo
+	contador int
 }
 
 func newTienda(nombre string, descripcion string, contacto string) *tienda{
@@ -28,7 +32,7 @@ func newNodo(t *tienda) *nodo {
 }
 
 func newLista() *lista{
-	return &lista{nil,nil}
+	return &lista{nil,nil,0}
 }
 
 func (l *lista) Vacio() bool  {
@@ -45,9 +49,47 @@ func insertar(t *tienda, l *lista){
 		l.ultimo.sig = nuevo
 		l.ultimo 	 = l.ultimo.sig
 	}
+	l.contador++
 }
 
-func imprimir(l *lista){
+func (l *lista) ordenar() lista {
+	aux := l.primero
+	valores := make([]int, 0, l.contador)
+	//Obtenemos valores ascii en slice
+	for aux != nil {
+		valor := 0
+		palabra := []rune(aux.tienda.nombre)
+		for i:=0; i < len(aux.tienda.nombre); i++{
+			valor = valor + int(palabra[i])
+		}
+		valores = append(valores, valor)
+		aux = aux.sig
+	}
+
+	//Ordenamos slice ascii
+	sort.Ints(valores)
+	aux2 := newLista()
+
+	//Creamos nueva lista con nodos ordenados
+	for i:=0;i<len(valores);i++{
+		aux = l.primero
+		for aux != nil {
+			valor := 0
+			palabra := []rune(aux.tienda.nombre)
+			for i:=0; i < len(aux.tienda.nombre); i++{
+				valor = valor + int(palabra[i])
+			}
+			if valores[i] == valor{
+				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto),aux2)
+				break
+			}
+			aux = aux.sig
+		}
+	}
+	return *aux2
+}
+
+func imprimir(l lista){
 	aux := l.primero
 	for aux != nil {
 		fmt.Println("Nombre: " 		+ aux.tienda.nombre)
@@ -66,5 +108,6 @@ func Eliminar(l *lista){
 			l.primero 	  = l.primero.sig
 			l.primero.ant = nil
 		}
+		l.contador--
 	}
 }
