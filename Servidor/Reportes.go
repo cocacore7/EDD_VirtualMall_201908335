@@ -1,89 +1,97 @@
 package Servidor
 
 import (
-	"fmt"
+	"io/ioutil"
 	"os"
+	"os/exec"
 	"strconv"
 )
 
-var ruta = "./Vector.dot"
-var cabe string
 var cant int
 var canta int
 
-func graficoCompleto(v []lista){
-	var _, err = os.Stat(ruta)
-
-	//Creando arhivo Si no Existe
-	if os.IsNotExist(err){
-		var archivo, _ = os.Create(ruta)
-		if err != nil{
-			fmt.Println(err.Error())
-		}
-		defer archivo.Close()
+func reportes(v []lista, i int, f int, n int){
+	//Metodo Recursivo
+	if i+5 <= len(v){
+		f = f + 5
+		escribir(i,f,n,v)
+	}else if i+4 <= len(v){
+		f = f + 4
+		escribir(i,f,n,v)
+	}else if i+3 <= len(v){
+		f = f + 3
+		escribir(i,f,n,v)
+	}else if i+2 <= len(v){
+		f = f + 2
+		escribir(i,f,n,v)
+	}else if i+1 <= len(v){
+		f = f + 1
+		escribir(i,f,n,v)
+	} else{
+		return
 	}
+}
 
-	//Escribiendo Grafico En Archivo
-	var archivo, err2 = os.OpenFile(ruta, os.O_RDWR, 0644)
-	if err2 != nil{
-		fmt.Println(err2.Error())
-	}
-	defer archivo.Close()
-
-	//Estructura Del Archivo
-	_, err = archivo.WriteString("Prueba")
-	if err != nil{
-		fmt.Println(err.Error())
-	}
+func escribir(i int, f int, n int, v []lista){
+	arch, _ := os.Create("archivo" + strconv.Itoa(n) + ".dot")
 
 	//Guardar Cambios en Archivo
-	cabe = ""
 	cant = 1
 	canta = 1
-	num := 1
-	_, err = archivo.WriteString("digraph grafo{" + "\n")
-	_, err = archivo.WriteString("rankdir=LR;" + "\n")
-	_, err = archivo.WriteString("node [shape = record, style=filled];" + "\n")
-	for i := 0; i < len(v); i++{
-		_, err = archivo.WriteString("nodo" + strconv.Itoa(cant) + `[label="`+ strconv.Itoa(num) + `"];` + "\n")
-		aux := v[i].primero
+	_, _ = arch.WriteString("digraph G{" + "\n")
+	_, _ = arch.WriteString(`graph[splines="ortho"];` + "\n")
+	_, _ = arch.WriteString("node [shape = record, style=filled];" + "\n")
+
+	cant = i+1
+	canta = i+1
+	num := i+1
+	inicio := i
+	final := f
+	//Nombres y Colores Nodos
+	for inicio < final{
+		_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[label="`+ strconv.Itoa(num) + `",fillcolor=green];` + "\n")
+		aux := v[inicio].primero
 		for aux != nil{
 			cant++
-			_, err = archivo.WriteString("nodo" + strconv.Itoa(cant) + `[label="`+ aux.tienda.nombre + `"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[label="Nombre: `+ aux.tienda.nombre + ". Contacto: " + aux.tienda.contacto + ". Descripcion: " + aux.tienda.descripcion + `",fillcolor=red];` + "\n")
 			aux = aux.sig
 		}
 		num++
 		cant++
+		inicio++
 	}
-
-	num = 1
-	cant = 1
-	for i := 0; i < len(v); i++{
+	num = i+1
+	cant = i+1
+	inicio = i
+	final = f
+	//Conexiones Nodos
+	for inicio < final{
 		cant = canta
-		aux := v[i].primero
+		aux := v[inicio].primero
 		for aux != nil{
-			cabe = "nodo" + strconv.Itoa(canta) + " -> nodo" + strconv.Itoa(canta + 1) + "; \n"
-			_, err = archivo.WriteString(cabe)
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(canta) + " -> nodo" + strconv.Itoa(canta + 1)  + "; \n")
 			canta++
 			aux = aux.sig
 		}
 		canta++
-		if i != len(v) - 1{
-			cabe = "nodo" + strconv.Itoa(cant) + " -> nodo" + strconv.Itoa(canta) + "; \n"
-			_, err = archivo.WriteString(cabe)
+		if inicio != f - 1{
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + " -> nodo" + strconv.Itoa(canta)  + "; \n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(canta) + " -> nodo" + strconv.Itoa(cant) + "; \n")
 		}
 		num++
-	}
-	_, err = archivo.WriteString("}" + "\n")
-
-	//Guardar Cambios
-	err = archivo.Sync()
-	if err != nil{
-		fmt.Println(err.Error())
+		inicio++
 	}
 
-	//Abrir Archivo Creado (No Funciona Aun)
-	/*grafo := "dot -Tpng Vector.dot -o grafo.png"
-	cmd := exec.Command(grafo)
-	_, err = cmd.Output()*/
+	_, _ = arch.WriteString("}" + "\n")
+	arch.Close()
+
+	//Crear Archivo
+	path, _ := exec.LookPath("dot")
+	cmd, _ := exec.Command(path, "-Tpng", "./archivo" + strconv.Itoa(n) + ".dot").Output()
+	mode := 0777
+	_ = ioutil.WriteFile("outfile" + strconv.Itoa(n) + ".png", cmd, os.FileMode(mode))
+	i = f
+	n++
+	//Recursividad
+	reportes(v,i,f,n)
 }

@@ -1,7 +1,6 @@
 package Servidor
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -9,6 +8,7 @@ type tienda struct {
 	nombre      string
 	descripcion string
 	contacto    string
+	calif int
 }
 
 type nodo struct {
@@ -23,8 +23,8 @@ type lista struct {
 	contador int
 }
 
-func newTienda(nombre string, descripcion string, contacto string) *tienda{
-	return &tienda{nombre,descripcion,contacto}
+func newTienda(nombre string, descripcion string, contacto string, calif int) *tienda{
+	return &tienda{nombre,descripcion,contacto, calif}
 }
 
 func newNodo(t *tienda) *nodo {
@@ -80,7 +80,7 @@ func (l *lista) ordenar() lista {
 				valor = valor + int(palabra[i])
 			}
 			if valores[i] == valor{
-				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto),aux2)
+				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto, aux.tienda.calif),aux2)
 				break
 			}
 			aux = aux.sig
@@ -89,17 +89,7 @@ func (l *lista) ordenar() lista {
 	return *aux2
 }
 
-func imprimir(l lista){
-	aux := l.primero
-	for aux != nil {
-		fmt.Println("Nombre: " 		+ aux.tienda.nombre)
-		fmt.Println("Descripcion: " + aux.tienda.descripcion)
-		fmt.Println("Contacto: " 	+ aux.tienda.contacto)
-		aux = aux.sig
-	}
-}
-
-func Eliminar(l *lista){
+/*func Eliminar(l *lista){
 	if !l.Vacio(){
 		if l.primero  == l.ultimo{
 			l.primero = nil
@@ -110,4 +100,4 @@ func Eliminar(l *lista){
 		}
 		l.contador--
 	}
-}
+}*/
