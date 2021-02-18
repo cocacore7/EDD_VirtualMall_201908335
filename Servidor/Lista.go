@@ -20,7 +20,6 @@ type nodo struct {
 type lista struct {
 	primero  *nodo
 	ultimo   *nodo
-	contador int
 }
 
 func newTienda(nombre string, descripcion string, contacto string, calif int) *tienda{
@@ -32,13 +31,14 @@ func newNodo(t *tienda) *nodo {
 }
 
 func newLista() *lista{
-	return &lista{nil,nil,0}
+	return &lista{nil,nil}
 }
 
 func (l *lista) Vacio() bool  {
 	return l.primero == nil
 }
 
+//Insertar En Lista
 func insertar(t *tienda, l *lista){
 	var nuevo = newNodo(t)
 	if l.Vacio(){
@@ -49,17 +49,17 @@ func insertar(t *tienda, l *lista){
 		l.ultimo.sig = nuevo
 		l.ultimo 	 = l.ultimo.sig
 	}
-	l.contador++
 }
 
+//Ordenar Lista
 func (l *lista) ordenar() lista {
 	aux := l.primero
-	valores := make([]int, 0, l.contador)
+	valores := make([]int, 0)
 	//Obtenemos valores ascii en slice
 	for aux != nil {
 		valor := 0
 		palabra := []rune(aux.tienda.nombre)
-		for i:=0; i < len(aux.tienda.nombre); i++{
+		for i:=0; i < len(palabra); i++{
 			valor = valor + int(palabra[i])
 		}
 		valores = append(valores, valor)
@@ -76,8 +76,8 @@ func (l *lista) ordenar() lista {
 		for aux != nil {
 			valor := 0
 			palabra := []rune(aux.tienda.nombre)
-			for i:=0; i < len(aux.tienda.nombre); i++{
-				valor = valor + int(palabra[i])
+			for j:=0; j < len(palabra); j++{
+				valor = valor + int(palabra[j])
 			}
 			if valores[i] == valor{
 				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto, aux.tienda.calif),aux2)
@@ -88,16 +88,3 @@ func (l *lista) ordenar() lista {
 	}
 	return *aux2
 }
-
-/*func Eliminar(l *lista){
-	if !l.Vacio(){
-		if l.primero  == l.ultimo{
-			l.primero = nil
-			l.ultimo  = nil
-		}else{
-			l.primero 	  = l.primero.sig
-			l.primero.ant = nil
-		}
-		l.contador--
-	}
-}*/
