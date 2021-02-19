@@ -87,7 +87,7 @@ func Crear(data Datos){
 
 //Reporte vector
 func grafico1(){
-	reportes(0,0,1)
+	reportes(0,0,1,0,0)
 }
 
 func Eliminar(t unico2) []byte{

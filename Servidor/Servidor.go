@@ -84,7 +84,7 @@ func elim(w http.ResponseWriter, r *http.Request){
 	}
 }
 
-func guardar(w http.ResponseWriter, r *http.Request){
+func guardar(w http.ResponseWriter, _ *http.Request){
 	if vec != nil{
 		var regreso Datos
 		a := retorno(0,0)
@@ -104,6 +104,6 @@ func Iniciar(){
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
 	router.HandleFunc("/cargartienda", cargar).Methods("POST")
 	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
-	router.HandleFunc("/Eliminar", elim).Methods("POST")
+	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":3000",router))
 }
