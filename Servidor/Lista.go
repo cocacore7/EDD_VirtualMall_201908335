@@ -55,12 +55,7 @@ func (l *lista) ordenar() lista {
 	valores := make([]int, 0)
 	//Obtenemos valores ascii en slice
 	for aux != nil {
-		valor := 0
-		palabra := []rune(aux.tienda.nombre)
-		for i:=0; i < len(palabra); i++{
-			valor = valor + int(palabra[i])
-		}
-		valores = append(valores, valor)
+		valores = append(valores, ascii(aux.tienda.nombre))
 		aux = aux.sig
 	}
 
@@ -72,11 +67,7 @@ func (l *lista) ordenar() lista {
 	for i:=0;i<len(valores);i++{
 		aux = l.primero
 		for aux != nil {
-			valor := 0
-			palabra := []rune(aux.tienda.nombre)
-			for j:=0; j < len(palabra); j++{
-				valor = valor + int(palabra[j])
-			}
+			valor := ascii(aux.tienda.nombre)
 			if valores[i] == valor{
 				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto, aux.tienda.calif),aux2)
 				break
@@ -99,4 +90,13 @@ func burbuja(arreglo []int) {
 		}
 	}
 	fmt.Println(arreglo)
+}
+
+func ascii(a string) int{
+	valor := 0
+	palabra := []rune(a)
+	for i:=0; i < len(palabra); i++{
+		valor = valor + int(palabra[i])
+	}
+	return valor
 }

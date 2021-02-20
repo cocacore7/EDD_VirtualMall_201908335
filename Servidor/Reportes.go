@@ -48,13 +48,13 @@ func escribir(i int, f int, n int, letra int, dep int){
 
 	//Primer Subgrafo
 	pos := i
-	_, _ = arch.WriteString(`subgraph cluster0{` + "\n")
+	_, _ = arch.WriteString(`subgraph cluster0{style=invis;` + "\n")
 	_, _ = arch.WriteString(`edge[minlen=0.1, dir=fordware]` + "\n")
-	_, _ = arch.WriteString(`struct1 [shape=record,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 1 | pos: ` + strconv.Itoa(pos) + `}"];` + "\n")
-	_, _ = arch.WriteString(`struct2 [shape=record,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 2 | pos: ` + strconv.Itoa(pos+1) + `}"];` + "\n")
-	_, _ = arch.WriteString(`struct3 [shape=record,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 3 | pos: ` + strconv.Itoa(pos+2) + `}"];` + "\n")
-	_, _ = arch.WriteString(`struct4 [shape=record,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 4 | pos: ` + strconv.Itoa(pos+3) + `}"];` + "\n")
-	_, _ = arch.WriteString(`struct5 [shape=record,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 5 | pos: ` + strconv.Itoa(pos+4) + `}"];` + "\n")
+	_, _ = arch.WriteString(`struct1 [shape=record,color=red,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 1 | pos: ` + strconv.Itoa(pos) + `}"];` + "\n")
+	_, _ = arch.WriteString(`struct2 [shape=record,color=red,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 2 | pos: ` + strconv.Itoa(pos+1) + `}"];` + "\n")
+	_, _ = arch.WriteString(`struct3 [shape=record,color=red,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 3 | pos: ` + strconv.Itoa(pos+2) + `}"];` + "\n")
+	_, _ = arch.WriteString(`struct4 [shape=record,color=red,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 4 | pos: ` + strconv.Itoa(pos+3) + `}"];` + "\n")
+	_, _ = arch.WriteString(`struct5 [shape=record,color=red,label="` + Indi[letra] + `|` + Depa[dep] + `|{ 5 | pos: ` + strconv.Itoa(pos+4) + `}"];` + "\n")
 	_, _ = arch.WriteString(`struct1 -> struct2;` + "\n")
 	_, _ = arch.WriteString(`struct2 -> struct3;` + "\n")
 	_, _ = arch.WriteString(`struct3 -> struct4;` + "\n")
@@ -67,14 +67,14 @@ func escribir(i int, f int, n int, letra int, dep int){
 	in := i
 	cant = 1
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString(`subgraph cluster1{` + "\n")
+		_, _ = arch.WriteString(`subgraph cluster1{style=invis;` + "\n")
 		_, _ = arch.WriteString(`edge[dir=both]` + "\n")
 
 		//Creacion Tiendas
 		aux := vec[in].primero
 		con = append(con, cant)
 		for aux != nil{
-			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,label="{` + aux.tienda.nombre + " | " + aux.tienda.contacto + `}"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,color=green,label="{{` + strconv.Itoa(ascii(aux.tienda.nombre)) + " | " + aux.tienda.nombre + " } | " + aux.tienda.contacto + `}"];` + "\n")
 			cant++
 			aux = aux.sig
 		}
@@ -107,14 +107,14 @@ func escribir(i int, f int, n int, letra int, dep int){
 	in++
 
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString(`subgraph cluster2{` + "\n")
+		_, _ = arch.WriteString(`subgraph cluster2{style=invis;` + "\n")
 		_, _ = arch.WriteString(`edge[dir=both]` + "\n")
 
 		//Creacion Tiendas
 		aux := vec[in].primero
 		con = append(con, cant)
 		for aux != nil{
-			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,label="{` + aux.tienda.nombre + " | " + aux.tienda.contacto + `}"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,color=green,label="{{` + strconv.Itoa(ascii(aux.tienda.nombre)) + " | " + aux.tienda.nombre + " } | " + aux.tienda.contacto + `}"];` + "\n")
 			cant++
 			aux = aux.sig
 		}
@@ -147,14 +147,14 @@ func escribir(i int, f int, n int, letra int, dep int){
 	in++
 
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString(`subgraph cluster3{` + "\n")
+		_, _ = arch.WriteString(`subgraph cluster3{style=invis;` + "\n")
 		_, _ = arch.WriteString(`edge[dir=both]` + "\n")
 
 		//Creacion Tiendas
 		aux := vec[in].primero
 		con = append(con, cant)
 		for aux != nil{
-			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,label="{` + aux.tienda.nombre + " | " + aux.tienda.contacto + `}"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,color=green,label="{{` + strconv.Itoa(ascii(aux.tienda.nombre)) + " | " + aux.tienda.nombre + " } | " + aux.tienda.contacto + `}"];` + "\n")
 			cant++
 			aux = aux.sig
 		}
@@ -187,14 +187,14 @@ func escribir(i int, f int, n int, letra int, dep int){
 	in++
 
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString(`subgraph cluster4{` + "\n")
+		_, _ = arch.WriteString(`subgraph cluster4{style=invis;` + "\n")
 		_, _ = arch.WriteString(`edge[dir=both]` + "\n")
 
 		//Creacion Tiendas
 		aux := vec[in].primero
 		con = append(con, cant)
 		for aux != nil{
-			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,label="{` + aux.tienda.nombre + " | " + aux.tienda.contacto + `}"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,color=green,label="{{` + strconv.Itoa(ascii(aux.tienda.nombre)) + " | " + aux.tienda.nombre + " } | " + aux.tienda.contacto + `}"];` + "\n")
 			cant++
 			aux = aux.sig
 		}
@@ -227,14 +227,14 @@ func escribir(i int, f int, n int, letra int, dep int){
 	in++
 
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString(`subgraph cluster5{` + "\n")
+		_, _ = arch.WriteString(`subgraph cluster5{style=invis;` + "\n")
 		_, _ = arch.WriteString(`edge[dir=both]` + "\n")
 
 		//Creacion Tiendas
 		aux := vec[in].primero
 		con = append(con, cant)
 		for aux != nil{
-			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,label="{` + aux.tienda.nombre + " | " + aux.tienda.contacto + `}"];` + "\n")
+			_, _ = arch.WriteString("nodo" + strconv.Itoa(cant) + `[shape=record,color=green,label="{{` + strconv.Itoa(ascii(aux.tienda.nombre)) + " | " + aux.tienda.nombre + " } | " + aux.tienda.contacto + `}"];` + "\n")
 			cant++
 			aux = aux.sig
 		}
@@ -268,27 +268,27 @@ func escribir(i int, f int, n int, letra int, dep int){
 	ultimo := 0
 	in = i
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString("struct1 -> nodo"+ strconv.Itoa(con[ultimo]) + " [lhead=cluster1];" + "\n")
+		_, _ = arch.WriteString("struct1 -> nodo"+ strconv.Itoa(con[ultimo]) + ";" + "\n")
 		ultimo++
 	}
 	in++
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString("struct2 -> nodo"+ strconv.Itoa(con[ultimo]) + " [lhead=cluster2];" + "\n")
+		_, _ = arch.WriteString("struct2 -> nodo"+ strconv.Itoa(con[ultimo]) + ";" + "\n")
 		ultimo++
 	}
 	in++
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString("struct3 -> nodo"+ strconv.Itoa(con[ultimo]) + " [lhead=cluster3];" + "\n")
+		_, _ = arch.WriteString("struct3 -> nodo"+ strconv.Itoa(con[ultimo]) + ";" + "\n")
 		ultimo++
 	}
 	in++
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString("struct4 -> nodo"+ strconv.Itoa(con[ultimo]) + " [lhead=cluster4];" + "\n")
+		_, _ = arch.WriteString("struct4 -> nodo"+ strconv.Itoa(con[ultimo]) + ";" + "\n")
 		ultimo++
 	}
 	in++
 	if !vec[in].Vacio(){
-		_, _ = arch.WriteString("struct5 -> nodo"+ strconv.Itoa(con[ultimo]) + " [lhead=cluster5];" + "\n")
+		_, _ = arch.WriteString("struct5 -> nodo"+ strconv.Itoa(con[ultimo]) + ";" + "\n")
 	}
 
 	_, _ = arch.WriteString("}" + "\n")
