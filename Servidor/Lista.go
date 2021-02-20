@@ -1,8 +1,6 @@
 package Servidor
 
-import (
-	"sort"
-)
+import "fmt"
 
 type tienda struct {
 	nombre      string
@@ -67,7 +65,7 @@ func (l *lista) ordenar() lista {
 	}
 
 	//Ordenamos slice ascii
-	sort.Ints(valores)
+	burbuja(valores)
 	aux2 := newLista()
 
 	//Creamos nueva lista con nodos ordenados
@@ -87,4 +85,18 @@ func (l *lista) ordenar() lista {
 		}
 	}
 	return *aux2
+}
+
+func burbuja(arreglo []int) {
+	var i, j, aux int
+	for i = 0; i < len(arreglo)-1; i++ {
+		for j = 0; j < len(arreglo)-i-1; j++ {
+			if arreglo[j+1] < arreglo[j] {
+				aux = arreglo[j+1]
+				arreglo[j+1] = arreglo[j]
+				arreglo[j] = aux
+			}
+		}
+	}
+	fmt.Println(arreglo)
 }
