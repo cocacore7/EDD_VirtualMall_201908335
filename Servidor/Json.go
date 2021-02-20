@@ -2,9 +2,12 @@ package Servidor
 
 import (
 	"encoding/json"
+	"os"
 )
 
 var vec []lista
+var Indi []string
+var Depa []string
 
 //Estructura tiendas json
 type Datos struct{
@@ -49,9 +52,15 @@ type unico2 struct {
 
 //Linealizacion
 func Crear(data Datos){
-	vec = make([]lista, 0, len(data.Datos[0].Departamentos)*len(data.Datos)*5)
+	vec = make([]lista, 0)
+
+	for j:=0; j<len(data.Datos[0].Departamentos);j++{
+		Depa = append(Depa, data.Datos[0].Departamentos[j].Departamentos)
+	}
+
 	//Creando Vector E Insertando Listas con Tiendas "ROW-MAJOR"
 	for i := 0; i < len(data.Datos); i++ {
+		Indi = append(Indi, data.Datos[i].Indice)
 		for j:=0; j<len(data.Datos[i].Departamentos);j++{
 			l1 := newLista()
 			l2 := newLista()
@@ -85,9 +94,70 @@ func Crear(data Datos){
 	}
 }
 
-//Reporte vector
-func grafico1(){
-	reportes(0,0,1,0,0)
+//Tienda Especifica
+func posiciont(t unico) Tiendas{
+	var ti Tiendas
+	i := posicionv(t)
+	if i < len(vec){
+		a := vec[i].primero
+		for a != nil{
+			if t.Tienda == a.tienda.nombre{
+				ti.Tiendas = a.tienda.nombre
+				ti.Descripcion = a.tienda.descripcion
+				ti.Contacto = a.tienda.contacto
+				ti.Calificacion = a.tienda.calif
+				break
+			}
+			a=a.sig
+		}
+	}
+	return ti
+}
+
+//Posicion Especifica
+func posicionv(t unico) int{
+	indice := string(t.Tienda[0])
+	var i int
+	var c int
+	for a:=0;a<len(Indi);a++{
+		if Indi[a] == indice{
+			i = a
+			break
+		}
+	}
+
+	for b:=0;b<len(Depa);b++{
+		if t.Departamento == Depa[b]{
+			c = b
+			break
+		}
+	}
+	seg:=(i*len(Depa)) + c
+	ter:= (seg*5)+ t.Calificacion-1
+	return ter
+}
+
+//Id Lista
+func posicionl(i int) []byte{
+	if vec != nil{
+		if vec[i-1].Vacio(){
+			crearJson, _ := json.Marshal("Lista Vacia")
+			return crearJson
+		}else{
+			var v varios
+			a := vec[i-1].primero
+			for a != nil{
+				t := Tiendas{Tiendas:a.tienda.nombre,Descripcion:a.tienda.descripcion,Contacto:a.tienda.contacto,Calificacion:a.tienda.calif}
+				v.Tiendas = append(v.Tiendas, t)
+				a = a.sig
+			}
+			crearJson, _ := json.Marshal(v)
+			return crearJson
+		}
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
 }
 
 func Eliminar(t unico2) []byte{
@@ -120,91 +190,75 @@ func Eliminar(t unico2) []byte{
 	}
 }
 
-//Id Lista
-func posicionl(i int) []byte{
-	if vec != nil{
-		if vec[i-1].Vacio(){
-			crearJson, _ := json.Marshal("Lista Vacia")
-			return crearJson
-		}else{
-			var v varios
-			a := vec[i-1].primero
-			for a != nil{
-				t := Tiendas{Tiendas:a.tienda.nombre,Descripcion:a.tienda.descripcion,Contacto:a.tienda.contacto,Calificacion:a.tienda.calif}
-				v.Tiendas = append(v.Tiendas, t)
-				a = a.sig
-			}
-			crearJson, _ := json.Marshal(v)
-			return crearJson
-		}
-	}else{
-		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
-		return crearJson
-	}
-}
-
-//Tienda Especifica
-func posiciont(t unico) Tiendas{
-	var ti Tiendas
-	i := posicionv(t)
-	if i < len(vec){
-		a := vec[i].primero
-		for a != nil{
-			if t.Tienda == a.tienda.nombre{
-				ti.Tiendas = a.tienda.nombre
-				ti.Descripcion = a.tienda.descripcion
-				ti.Contacto = a.tienda.contacto
-				ti.Calificacion = a.tienda.calif
-				break
-			}
-			a=a.sig
-		}
-	}
-	return ti
-}
-
-//Posicion Especifica
-func posicionv(t unico) int{
-	indice := string(t.Tienda[0])
-	var i int
-	var c int
-	for a:=0;a<len(data.Datos);a++{
-		if data.Datos[a].Indice == indice{
-			i = a
-			break
-		}
-	}
-
-	for b:=0;b<len(data.Datos[0].Departamentos);b++{
-		if t.Departamento == data.Datos[0].Departamentos[b].Departamentos{
-			c = b
-			break
-		}
-	}
-	seg:=(i*len(data.Datos[0].Departamentos)) + c
-	ter:= (seg*5)+ t.Calificacion-1
-	return ter
-}
-
 //Posicion Especifica
 func posicionv2(t unico2) int{
 	indice := string(t.Tienda[0])
 	var i int
 	var c int
-	for a:=0;a<len(data.Datos);a++{
-		if data.Datos[a].Indice == indice{
+	for a:=0;a<len(Indi);a++{
+		if Indi[a] == indice{
 			i = a
 			break
 		}
 	}
 
-	for b:=0;b<len(data.Datos[0].Departamentos);b++{
-		if t.Categoria == data.Datos[0].Departamentos[b].Departamentos{
+	for b:=0;b<len(Depa);b++{
+		if t.Categoria == Depa[b]{
 			c = b
 			break
 		}
 	}
-	seg:=(i*len(data.Datos[0].Departamentos)) + c
+	seg:=(i*len(Depa)) + c
 	ter:= (seg*5)+ t.Calificacion-1
 	return ter
+}
+
+func retorno(in int, fi int) []byte{
+	var reg Datos
+	reg.Datos = make([]Indice,len(Indi))
+	for i:=0;i<len(Indi);i++{
+		reg.Datos[i].Indice = Indi[i]
+		reg.Datos[i].Departamentos = make([]Departamentos,len(Depa))
+		for j:=0;j<len(Depa);j++{
+			reg.Datos[i].Departamentos[j].Departamentos = Depa[j]
+			if in+5 <= len(vec){
+				fi = fi + 5
+			}else if in+4 <= len(vec){
+				fi = fi + 4
+			}else if in+3 <= len(vec){
+				fi = fi + 3
+			}else if in+2 <= len(vec){
+				fi = fi + 2
+			}else if in+1 <= len(vec){
+				fi = fi + 1
+			}
+			reg.Datos[i].Departamentos[j].Tiendas = obtenerT(in, fi)
+			//reg.Datos[i].Departamentos = append(reg.Datos[i].Departamentos, reg.Datos[i].Departamentos[j])
+			in = fi
+		}
+		//reg.Datos = append(reg.Datos, reg.Datos[i])
+	}
+	arch, _ := os.Create("Salida.json")
+	crearJson, _ := json.MarshalIndent(reg,"","    ")
+	_, _ = arch.WriteString(string(crearJson))
+	arch.Close()
+	return crearJson
+}
+
+func obtenerT(i int, f int) []Tiendas{
+	var t []Tiendas
+	var aux Tiendas
+	for i<f{
+		a := vec[i].primero
+		for a != nil{
+			aux.Tiendas = a.tienda.nombre
+			aux.Descripcion = a.tienda.descripcion
+			aux.Contacto = a.tienda.contacto
+			aux.Calificacion = a.tienda.calif
+			t = append(t, aux)
+			a = a.sig
+		}
+		i++
+	}
+	return t
 }

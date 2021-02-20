@@ -10,10 +10,9 @@ import (
 	"strconv"
 )
 
-var data Datos
-
 //Cargar tiendas En Json
 func cargar(w http.ResponseWriter, r *http.Request){
+	var data Datos
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil{
 		_, _ = fmt.Fprintf(w, "Error al insertar")
@@ -27,7 +26,7 @@ func cargar(w http.ResponseWriter, r *http.Request){
 
 //Generar Grafos
 func getArreglo(w http.ResponseWriter, _ *http.Request){
-	grafico1()
+	reportes(0,0,1,0,0)
 	w.Header().Set("Content-Type","applicattion/json")
 	w.WriteHeader(http.StatusCreated)
 }
@@ -54,6 +53,7 @@ func tiendaE(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//Lista De tiendas
 func tiendaN(w http.ResponseWriter, r *http.Request){
 	var v varios
 	vars:=mux.Vars(r)
@@ -65,6 +65,7 @@ func tiendaN(w http.ResponseWriter, r *http.Request){
 	_ = json.NewEncoder(w).Encode(v)
 }
 
+//Eliminar
 func elim(w http.ResponseWriter, r *http.Request){
 	var t unico2
 	body, err := ioutil.ReadAll(r.Body)
@@ -84,6 +85,7 @@ func elim(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//Guardar
 func guardar(w http.ResponseWriter, _ *http.Request){
 	if vec != nil{
 		var regreso Datos
