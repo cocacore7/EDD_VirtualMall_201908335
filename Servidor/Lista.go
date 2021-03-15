@@ -7,6 +7,8 @@ type tienda struct {
 	descripcion string
 	contacto    string
 	calif int
+	logo string
+	productos *ArbolProducto
 }
 
 type nodo struct {
@@ -20,8 +22,8 @@ type lista struct {
 	ultimo   *nodo
 }
 
-func newTienda(nombre string, descripcion string, contacto string, calif int) *tienda{
-	return &tienda{nombre,descripcion,contacto, calif}
+func newTienda(nombre string, descripcion string, contacto string, calif int,logo string) *tienda{
+	return &tienda{nombre,descripcion,contacto, calif,logo, NewArbolProducto()}
 }
 
 func newNodo(t *tienda) *nodo {
@@ -69,7 +71,7 @@ func (l *lista) ordenar() lista {
 		for aux != nil {
 			valor := ascii(aux.tienda.nombre)
 			if valores[i] == valor{
-				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto, aux.tienda.calif),aux2)
+				insertar(newTienda(aux.tienda.nombre, aux.tienda.descripcion,aux.tienda.contacto, aux.tienda.calif,aux.tienda.logo),aux2)
 				break
 			}
 			aux = aux.sig
