@@ -34,7 +34,7 @@ func NewNodoAño(año Año,id int) *nodoAño{
 	return &nodoAño{año,0,id,nil,nil}
 }
 
-func NewAño(año int, mes listaMes) *Año{
+func NewAño(año int) *Año{
 	return &Año{año, newListaMes()}
 }
 
@@ -189,5 +189,32 @@ func (this *nodoAño) Interno() string{
 		etiqueta+=this.der.Interno() + "nodo"+strconv.Itoa(this.id)+"->nodo"+strconv.Itoa(this.der.id)+";\n"
 	}
 	return etiqueta
+}
+
+func insertarMesYPedido(raiz *nodoAño, año int,mes string, dia int, posv int,t tiendaPedido,codigos []int){
+	if año < raiz.Año.Año{
+		insertarMesYPedido(raiz.izq,año,mes,dia,posv,t,codigos)
+	}else if año > raiz.Año.Año{
+		insertarMesYPedido(raiz.izq,año,mes,dia,posv,t,codigos)
+	}else if año == raiz.Año.Año{
+		if raiz.Año.mes.primero != nil{
+			aux := raiz.Año.mes.primero
+			ban:=true
+			for aux != nil{
+				if aux.Mes.mes == mes{
+					ban = false
+					break
+				}
+				aux = aux.sig
+			}
+			if ban{
+				insertarMes(newMes(mes),raiz.Año.mes)
+			}
+		}else{
+			insertarMes(newMes(mes),raiz.Año.mes)
+		}
+
+		raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,dia,posv,t,codigos)
+	}
 }
 

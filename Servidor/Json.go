@@ -3,12 +3,15 @@ package Servidor
 import (
 	"encoding/json"
 	"os"
+	"strconv"
+	"strings"
 )
 
-var años *ArbolAño
+var añosArbol *ArbolAño
 var vec []lista
 var Indi []string
 var Depa []string
+var NoPedido int
 
 //---------------------------------------------------------------------------------------------
 //FASE1
@@ -19,21 +22,21 @@ type Datos struct{
 }
 
 type Indice struct{
-	Indice string `json:"Indice"`
+	Indice 		  string 		  `json:"Indice"`
 	Departamentos []Departamentos `json:"Departamentos"`
 }
 
 type Departamentos struct {
-	Departamentos string `json:"Nombre"`
-	Tiendas []Tiendas `json:"Tiendas"`
+	Departamentos string 	`json:"Nombre"`
+	Tiendas 	  []Tiendas `json:"Tiendas"`
 }
 
 type Tiendas struct {
-	Tiendas string `json:"Nombre"`
-	Descripcion string `json:"Descripcion"`
-	Contacto string `json:"Contacto"`
-	Calificacion int `json:"Calificacion"`
-	Logo string `json:"Logo"`
+	Tiendas 		string  `json:"Nombre"`
+	Descripcion 	string  `json:"Descripcion"`
+	Contacto 		string  `json:"Contacto"`
+	Calificacion 	int 	`json:"Calificacion"`
+	Logo 			string  `json:"Logo"`
 }
 
 //Estructura complementaria
@@ -44,15 +47,15 @@ type varios struct {
 //Estructura Busqueda
 type unico struct {
 	Departamento string `json:"Departamento"`
-	Tienda string `json:"Nombre"`
-	Calificacion int `json:"Calificacion"`
+	Tienda 		 string `json:"Nombre"`
+	Calificacion int 	`json:"Calificacion"`
 }
 
 //Estructura Busqueda
 type unico2 struct {
-	Categoria string `json:"Categoria"`
-	Tienda string `json:"Nombre"`
-	Calificacion int `json:"Calificacion"`
+	Categoria 		string  `json:"Categoria"`
+	Tienda 			string  `json:"Nombre"`
+	Calificacion 	int 	`json:"Calificacion"`
 }
 
 //FASE1
@@ -63,24 +66,41 @@ type unico2 struct {
 
 //Estructura Inventarios json
 type Inventarios struct {
-	Inventarios []TiendasInventario `json:"Invetarios"`
+	Inventarios []TiendasInventario `json:"Inventarios"`
 }
 
 type TiendasInventario struct {
-	Tienda string `json:"Tienda"`
-	Departamento string `json:"Departamento"`
-	Calificacion int `json:"Calificacion"`
-	Productos []Productos `json:"Productos"`
+	Tienda 			string  	`json:"Tienda"`
+	Departamento 	string  	`json:"Departamento"`
+	Calificacion 	int 		`json:"Calificacion"`
+	Productos 		[]Productos `json:"Productos"`
 }
 
 type Productos struct {
-	Nombre string `json:"Nombre"`
-	Codigo int `json:"Codigo"`
-	Descripcion string `json:"Descripcion"`
-	Precio int `json:"Precio"`
-	Cantidad int `json:"Cantidad"`
-	Imagen string `json:"Imagen"`
+	Nombre 			string  `json:"Nombre"`
+	Codigo 			int 	`json:"Codigo"`
+	Descripcion 	string  `json:"Descripcion"`
+	Precio 			int 	`json:"Precio"`
+	Cantidad 		int 	`json:"Cantidad"`
+	Imagen 			string  `json:"Imagen"`
 }
+
+type Pedidos struct {
+	Pedidos []tiendaPedido `json:"Pedidos"`
+}
+
+type tiendaPedido struct {
+	Fecha 			string 				`json:"Fecha"`
+	Tienda 			string 				`json:"Tienda"`
+	Departamento 	string 				`json:"Departamento"`
+	Calificacion 	int    				`json:"Calificacion"`
+	Productos 		[]productosPedido   `json:"Productos"`
+}
+
+type productosPedido struct {
+	Codigo int `json:"Codigo"`
+}
+
 
 //FASE2
 //---------------------------------------------------------------------------------------------
@@ -88,9 +108,11 @@ type Productos struct {
 //---------------------------------------------------------------------------------------------
 //FASE1
 
-//Linealizacion
+//Linealizacion E Inicializacion AVLAños
 func Crear(data Datos){
 	vec = make([]lista, 0)
+	añosArbol = NewArbolAño()
+	NoPedido = 0
 
 	for j:=0; j<len(data.Datos[0].Departamentos);j++{
 		Depa = append(Depa, data.Datos[0].Departamentos[j].Departamentos)
@@ -362,6 +384,116 @@ func posicionv3(t TiendasInventario) int{
 	seg:=(i*len(Depa)) + c
 	ter:= (seg*5)+ t.Calificacion-1
 	return ter
+}
+
+//Insertar Productos En Tiendas Linealizadas
+func PedidosJson(t Pedidos) []byte{
+	if vec!=nil{
+		for y:=0;y<len(t.Pedidos);y++{
+			i := posicionv4(t.Pedidos[y])
+			if vec[i].Vacio(){
+				crearJson, _ := json.Marshal("No existen Tiendas Cargadas")
+				return crearJson
+			} else{
+				//Fecha
+				fecha := strings.Split(t.Pedidos[y].Fecha,"-")
+				año, _ := strconv.Atoi(fecha[2])
+				//mes := obtenerMes(fecha[1])
+				//dia, _ := strconv.Atoi(fecha[0])
+
+				//Codigos Aceptables
+				codigosAux:=make([]int,0)
+				aux:=vec[i].primero
+				var produtosaux *ArbolProducto
+				for aux != nil{
+					if aux.tienda.nombre == t.Pedidos[y].Tienda{
+						produtosaux = aux.tienda.productos
+						break
+					}
+					aux = aux.sig
+				}
+				if produtosaux.raiz!=nil{
+					for x:=0;x<len(t.Pedidos[y].Productos);x++{
+						if buscarCodigoPedido(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+							bandera := true
+							for z:=0;z<len(codigosAux);z++{
+								if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
+									bandera = false
+									break
+								}
+							}
+							if bandera{
+								codigosAux = append(codigosAux, t.Pedidos[y].Productos[x].Codigo)
+							}
+						}
+					}
+
+					//Insertar Datos En Matriz
+					añosArbol.InsertarAVLAño(*NewAño(año),y)
+					//insertarMesYPedido(añosArbol.raiz,año,mes,dia,i,t.Pedidos[y],codigosAux)
+				}
+			}
+		}
+		crearJson, _ := json.Marshal(t)
+		return crearJson
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
+}
+
+//Obtener Posicion Especifica En Inventario
+func posicionv4(t tiendaPedido) int{
+	indice := string(t.Tienda[0])
+	var i int
+	var c int
+	for a:=0;a<len(Indi);a++{
+		if Indi[a] == indice{
+			i = a
+			break
+		}
+	}
+
+	for b:=0;b<len(Depa);b++{
+		if t.Departamento == Depa[b]{
+			c = b
+			break
+		}
+	}
+	seg:=(i*len(Depa)) + c
+	ter:= (seg*5)+ t.Calificacion-1
+	return ter
+}
+
+//Obtener Mes
+func obtenerMes(m string) string{
+	switch m {
+	case "01":
+		return "Enero"
+	case "02":
+		return "Febrero"
+	case "03":
+		return "Marzo"
+	case "04":
+		return "Abril"
+	case "05":
+		return "Mayo"
+	case "06":
+		return "Junio"
+	case "07":
+		return "Julio"
+	case "08":
+		return "Agosto"
+	case "09":
+		return "Septiembre"
+	case "10":
+		return "Octubre"
+	case "11":
+		return "Noviembre"
+	case "12":
+		return "Diciembre"
+	}
+	return "Invalido"
 }
 
 //FASE2

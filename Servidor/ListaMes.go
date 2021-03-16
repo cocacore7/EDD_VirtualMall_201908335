@@ -2,11 +2,12 @@ package Servidor
 
 
 type Mes struct {
-	mes      	string
+	mes    string
+	matriz *Matriz
 }
 
 type nodoMes struct {
-	Mes  *Mes
+	Mes  	*Mes
 	sig 	*nodoMes
 	ant     *nodoMes
 }
@@ -17,7 +18,7 @@ type listaMes struct {
 }
 
 func newMes(mes string) *Mes{
-	return &Mes{mes}
+	return &Mes{mes, newMatriz()}
 }
 
 func newNodoMes(m *Mes) *nodoMes {
@@ -28,6 +29,7 @@ func newListaMes() *listaMes{
 	return &listaMes{nil,nil}
 }
 
+//VacioMes
 func (l *listaMes) VacioMes() bool  {
 	return l.primero == nil
 }
@@ -45,3 +47,19 @@ func insertarMes(t *Mes, l *listaMes){
 	}
 }
 
+//Ordenar Lista
+func (l *listaMes) IngresarPedido(mes string,dia int, posv int,t tiendaPedido, codigos []int) *listaMes {
+	aux := l.primero
+	aux2 := newListaMes()
+	matriz:=newMatriz()
+	for aux != nil {
+		if mes == aux.Mes.mes{
+			matriz.Agregar(newPedido(dia,NoPedido,t.Tienda,t.Departamento,t.Calificacion,codigos))
+			NoPedido++
+		}else{
+			insertarMes(aux.Mes,aux2)
+		}
+		aux = aux.sig
+	}
+	return aux2
+}

@@ -99,7 +99,7 @@ func guardar(w http.ResponseWriter, _ *http.Request){
 	}
 }
 
-//Eliminar
+//Inventario
 func inven(w http.ResponseWriter, r *http.Request){
 	var t Inventarios
 	body, err := ioutil.ReadAll(r.Body)
@@ -111,7 +111,27 @@ func inven(w http.ResponseWriter, r *http.Request){
 	_ = json.Unmarshal(body, &t)
 	if vec != nil{
 		a:= Inventario(t)
-		var v varios
+		var v Inventarios
+		_ = json.Unmarshal(a, &v)
+		_ = json.NewEncoder(w).Encode(t)
+	}else{
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
+//Pedidos
+func pedido(w http.ResponseWriter, r *http.Request){
+	var t Pedidos
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	if vec != nil{
+		a:= PedidosJson(t)
+		var v Pedidos
 		_ = json.Unmarshal(a, &v)
 		_ = json.NewEncoder(w).Encode(v)
 	}else{
@@ -126,7 +146,8 @@ func Iniciar(){
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
 	router.HandleFunc("/cargartienda", cargar).Methods("POST")
 	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
+	router.HandleFunc("/cargarInventario", inven).Methods("POST")
+	router.HandleFunc("/cargarPedido", pedido).Methods("POST")
 	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
-	router.HandleFunc("/cargarInventario", elim).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3000",router))
 }

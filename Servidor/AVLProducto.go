@@ -193,3 +193,14 @@ func (this *nodoproducto) Interno() string{
 	}
 	return etiqueta
 }
+
+func buscarCodigoPedido(raiz *nodoproducto, codigo int, bandera bool) bool{
+	if codigo < raiz.producto.Codigo{
+		bandera = buscarCodigoPedido(raiz.izq,codigo,bandera)
+	}else if codigo > raiz.producto.Codigo{
+		bandera = buscarCodigoPedido(raiz.der,codigo,bandera)
+	}else if codigo == raiz.producto.Codigo{
+		bandera = true
+	}
+	return bandera
+}
