@@ -180,7 +180,7 @@ func (this *Matriz) Agregar(nueva *nodoPedido){
 	}
 	izquierda:=this.obtenerUltimoH(vertical.(*NodoCabeceraVertical),nueva.dia)
 	superior:= this.obtenerUltimoV(horizontal.(*NodoCabeceraHorizontal),nueva.Categoria)
-	if reflect.TypeOf(izquierda).String()=="*main.nodoPedido"{
+	if reflect.TypeOf(izquierda).String()=="*Servidor.nodoPedido"{
 		if izquierda.(*nodoPedido).Der == nil{
 			izquierda.(*nodoPedido).Der=nueva
 			nueva.Izq = izquierda
@@ -203,7 +203,7 @@ func (this *Matriz) Agregar(nueva *nodoPedido){
 			nueva.Der = tmp
 		}
 	}
-	if reflect.TypeOf(superior).String()=="*main.nodoPedido"{
+	if reflect.TypeOf(superior).String()=="*Servidor.nodoPedido"{
 		if superior.(*nodoPedido).Aba == nil{
 			superior.(*nodoPedido).Aba=nueva
 			nueva.Arr = superior

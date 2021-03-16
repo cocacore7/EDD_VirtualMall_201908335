@@ -48,14 +48,15 @@ func insertarMes(t *Mes, l *listaMes){
 }
 
 //Ordenar Lista
-func (l *listaMes) IngresarPedido(mes string,dia int, posv int,t tiendaPedido, codigos []int) *listaMes {
+func (l *listaMes) IngresarPedido(mes string,dia int,t tiendaPedido, codigos []int) *listaMes {
 	aux := l.primero
 	aux2 := newListaMes()
-	matriz:=newMatriz()
 	for aux != nil {
 		if mes == aux.Mes.mes{
-			matriz.Agregar(newPedido(dia,NoPedido,t.Tienda,t.Departamento,t.Calificacion,codigos))
+			aux.Mes.matriz.Agregar(newPedido(dia,NoPedido,t.Tienda,t.Departamento,t.Calificacion,codigos))
 			NoPedido++
+			insertarMes(aux.Mes,aux2)
+			break
 		}else{
 			insertarMes(aux.Mes,aux2)
 		}

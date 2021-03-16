@@ -191,11 +191,13 @@ func (this *nodoAño) Interno() string{
 	return etiqueta
 }
 
-func insertarMesYPedido(raiz *nodoAño, año int,mes string, dia int, posv int,t tiendaPedido,codigos []int){
+func insertarMesYPedido(raiz *nodoAño, año int,mes string, dia int,t tiendaPedido,codigos []int) *nodoAño{
 	if año < raiz.Año.Año{
-		insertarMesYPedido(raiz.izq,año,mes,dia,posv,t,codigos)
+		izq:=insertarMesYPedido(raiz.izq,año,mes,dia,t,codigos)
+		raiz.izq = izq
 	}else if año > raiz.Año.Año{
-		insertarMesYPedido(raiz.izq,año,mes,dia,posv,t,codigos)
+		der:=insertarMesYPedido(raiz.der,año,mes,dia,t,codigos)
+		raiz.der = der
 	}else if año == raiz.Año.Año{
 		if raiz.Año.mes.primero != nil{
 			aux := raiz.Año.mes.primero
@@ -214,7 +216,7 @@ func insertarMesYPedido(raiz *nodoAño, año int,mes string, dia int, posv int,t
 			insertarMes(newMes(mes),raiz.Año.mes)
 		}
 
-		raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,dia,posv,t,codigos)
+		//raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,dia,t,codigos)
 	}
+	return raiz
 }
-

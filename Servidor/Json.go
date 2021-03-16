@@ -398,8 +398,8 @@ func PedidosJson(t Pedidos) []byte{
 				//Fecha
 				fecha := strings.Split(t.Pedidos[y].Fecha,"-")
 				año, _ := strconv.Atoi(fecha[2])
-				//mes := obtenerMes(fecha[1])
-				//dia, _ := strconv.Atoi(fecha[0])
+				mes := obtenerMes(fecha[1])
+				dia, _ := strconv.Atoi(fecha[0])
 
 				//Codigos Aceptables
 				codigosAux:=make([]int,0)
@@ -430,7 +430,7 @@ func PedidosJson(t Pedidos) []byte{
 
 					//Insertar Datos En Matriz
 					añosArbol.InsertarAVLAño(*NewAño(año),y)
-					//insertarMesYPedido(añosArbol.raiz,año,mes,dia,i,t.Pedidos[y],codigosAux)
+					añosArbol.raiz = insertarMesYPedido(añosArbol.raiz,año,mes,dia,t.Pedidos[y],codigosAux)
 				}
 			}
 		}
