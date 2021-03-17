@@ -389,7 +389,7 @@ func posicionv3(t TiendasInventario) int{
 	return ter
 }
 
-//Insertar Pedidos En Arbol Años
+//Insertar Pedidos En Arbol Años Desde Administrador
 func PedidosJson(t Pedidos) []byte{
 	if vec!=nil{
 		for y:=0;y<len(t.Pedidos);y++{
@@ -525,6 +525,143 @@ func obtenerMes(m string) string{
 		return "Diciembre"
 	}
 	return "Invalido"
+}
+
+//Insertar Pedidos En Arbol Años
+func ValidarPedidosJsonCarrito(t Pedidos) bool{
+	bandera2:=true
+	if vec!=nil{
+		for y:=0;y<len(t.Pedidos);y++{
+			i := posicionv4(t.Pedidos[y])
+			if vec[i].Vacio(){
+				return false
+			} else{
+				//Obtener Productos De Tienda solicitada A Consultar
+				codigosAux:=make([]int,0)
+				aux:=vec[i].primero
+				var produtosaux *ArbolProducto
+				for aux != nil{
+					if aux.tienda.nombre == t.Pedidos[y].Tienda{
+						produtosaux = aux.tienda.productos
+						break
+					}
+					aux = aux.sig
+				}
+				//Obtener Codigos Validos De Pedidos EN Tienda Solicitada
+				if produtosaux!=nil{
+					if produtosaux.raiz != nil{
+						for x:=0;x<len(t.Pedidos[y].Productos);x++{
+							if buscarCodigoPedido(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+								bandera := true
+								for z:=0;z<len(codigosAux);z++{
+									if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
+										bandera = false
+										break
+									}
+								}
+								if bandera{
+									codigosAux = append(codigosAux, t.Pedidos[y].Productos[x].Codigo)
+								}
+							}
+						}
+
+						//Validar Stock Del Pedido Y Restar Stock Solicitado
+						bandera := true
+						contador:=0
+						for x:=0;x<len(t.Pedidos[y].Productos);x++{
+							if ValidarExistencias(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+								vec[i] = vec[i].RestarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+								contador++
+							}else{
+								Cod = t.Pedidos[y].Productos[x].Codigo
+								bandera = false
+								bandera2 = false
+								break
+							}
+						}
+						if bandera{
+							for x:=0;x<len(t.Pedidos[y].Productos);x++{
+								vec[i] = vec[i].SumarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+							}
+						}else {
+							for x:=0;x<contador;x++{
+								vec[i] = vec[i].SumarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+							}
+						}
+					}
+				}
+			}
+			if !bandera2{break}
+		}
+		return bandera2
+	}else{
+		return false
+	}
+}
+
+//Insertar Pedidos En Arbol Años Desde Carrito
+func PedidosJsonCarrito(t Pedidos) []byte{
+	if vec!=nil{
+		for y:=0;y<len(t.Pedidos);y++{
+			i := posicionv4(t.Pedidos[y])
+			if vec[i].Vacio(){
+				crearJson, _ := json.Marshal("No existen Tiendas Cargadas")
+				return crearJson
+			} else{
+				//Fecha
+				fecha := strings.Split(t.Pedidos[y].Fecha,"-")
+				año, _ := strconv.Atoi(fecha[2])
+				mes := obtenerMes(fecha[1])
+				dia, _ := strconv.Atoi(fecha[0])
+
+				//Ingresar Año Y Mes
+				añosArbol.InsertarAVLAño(*NewAño(año),y)
+				añosArbol.raiz = insertarMesArbol(añosArbol.raiz,año,mes)
+
+				//Obtener Productos De Tienda solicitada A Consultar
+				codigosAux:=make([]int,0)
+				aux:=vec[i].primero
+				var produtosaux *ArbolProducto
+				for aux != nil{
+					if aux.tienda.nombre == t.Pedidos[y].Tienda{
+						produtosaux = aux.tienda.productos
+						break
+					}
+					aux = aux.sig
+				}
+				//Obtener Codigos Validos De Pedidos EN Tienda Solicitada
+				if produtosaux!=nil{
+					if produtosaux.raiz != nil{
+						for x:=0;x<len(t.Pedidos[y].Productos);x++{
+							if buscarCodigoPedido(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+								bandera := true
+								for z:=0;z<len(codigosAux);z++{
+									if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
+										fmt.Println("El Codigo: "+ strconv.Itoa(t.Pedidos[y].Productos[x].Codigo)+ " Viene repetido Dentro Del Pedido")
+										bandera = false
+										break
+									}
+								}
+								if bandera{
+									codigosAux = append(codigosAux, t.Pedidos[y].Productos[x].Codigo)
+								}
+							}
+						}
+
+						//Insertar Pedido En Matriz
+						ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
+						NoPedido++
+						añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)
+					}
+				}
+			}
+		}
+		crearJson, _ := json.Marshal(t)
+		return crearJson
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
 }
 
 //FASE2

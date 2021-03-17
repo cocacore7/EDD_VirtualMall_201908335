@@ -10,6 +10,8 @@ import (
 	"strconv"
 )
 
+var Cod int
+
 //Cargar tiendas En Json
 func cargar(w http.ResponseWriter, r *http.Request){
 	var data Datos
@@ -139,6 +141,36 @@ func pedido(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//Pedidos Desde Carrito
+func pedidoCarrito(w http.ResponseWriter, r *http.Request){
+	var t Pedidos
+	Cod = 0
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	if vec != nil{
+		if ValidarPedidosJsonCarrito(t){
+			a:= PedidosJsonCarrito(t)
+			var v Pedidos
+			_ = json.Unmarshal(a, &v)
+			_ = json.NewEncoder(w).Encode(v)
+		}else{
+			if Cod == 0{
+				_ = json.NewEncoder(w).Encode("No hay Tiendas Cargadas")
+			}else{
+				_ = json.NewEncoder(w).Encode("Pedido Rechazado, Producto con Codigo: "+strconv.Itoa(Cod)+" No cuenta con Existencia Solicitada")
+			}
+
+		}
+	}else{
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
 func Iniciar(){
 	router := mux.NewRouter()
 	router.HandleFunc("/guardar", guardar).Methods("GET")
@@ -148,6 +180,7 @@ func Iniciar(){
 	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
 	router.HandleFunc("/cargarInventario", inven).Methods("POST")
 	router.HandleFunc("/cargarPedido", pedido).Methods("POST")
+	router.HandleFunc("/cargarPedidoCarrito", pedidoCarrito).Methods("POST")
 	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":3000",router))
 }
