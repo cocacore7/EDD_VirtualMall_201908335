@@ -34,7 +34,7 @@ func (l *listaMes) VacioMes() bool  {
 	return l.primero == nil
 }
 
-//Insertar En Lista
+//Insertar Mes En Lista
 func insertarMes(t *Mes, l *listaMes){
 	var nuevo = newNodoMes(t)
 	if l.VacioMes(){
@@ -47,8 +47,26 @@ func insertarMes(t *Mes, l *listaMes){
 	}
 }
 
-//Ordenar Lista
+//Ingresar Pedido En Matriz De Mes
 func (l *listaMes) IngresarPedido(mes string,pedido *nodoPedido) *listaMes {
+	aux := l.primero
+	aux2 := newListaMes()
+	for aux != nil {
+		if mes == aux.Mes.mes{
+			aux.Mes.matriz.Agregar(pedido)
+			NoPedido++
+			insertarMes(aux.Mes,aux2)
+			break
+		}else{
+			insertarMes(aux.Mes,aux2)
+		}
+		aux = aux.sig
+	}
+	return aux2
+}
+
+//Validar Stock Del Producto Solicitado En Pedido
+func (l *listaMes) ValidarExistenciasMes(mes string,pedido *nodoPedido) *listaMes {
 	aux := l.primero
 	aux2 := newListaMes()
 	for aux != nil {

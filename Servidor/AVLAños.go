@@ -15,11 +15,11 @@ type Año struct {
 }
 
 type nodoAño struct {
-	Año Año
-	Factor int
-	id int
-	izq *nodoAño
-	der *nodoAño
+	Año 	Año
+	Factor  int
+	id 		int
+	izq 	*nodoAño
+	der 	*nodoAño
 }
 
 type ArbolAño struct {
@@ -191,12 +191,12 @@ func (this *nodoAño) Interno() string{
 	return etiqueta
 }
 
-func insertarMesYPedido(raiz *nodoAño, año int,mes string, pedido *nodoPedido) *nodoAño{
+func insertarMesArbol(raiz *nodoAño, año int,mes string) *nodoAño{
 	if año < raiz.Año.Año{
-		izq:=insertarMesYPedido(raiz.izq,año,mes,pedido)
+		izq:=insertarMesArbol(raiz.izq,año,mes)
 		raiz.izq = izq
 	}else if año > raiz.Año.Año{
-		der:=insertarMesYPedido(raiz.der,año,mes,pedido)
+		der:=insertarMesArbol(raiz.der,año,mes)
 		raiz.der = der
 	}else if año == raiz.Año.Año{
 		if raiz.Año.mes.primero != nil{
@@ -216,7 +216,18 @@ func insertarMesYPedido(raiz *nodoAño, año int,mes string, pedido *nodoPedido)
 		}else{
 			insertarMes(newMes(mes),raiz.Año.mes)
 		}
+	}
+	return raiz
+}
 
+func insertarPedidoArbol(raiz *nodoAño, año int,mes string, pedido *nodoPedido) *nodoAño{
+	if año < raiz.Año.Año{
+		izq:=insertarPedidoArbol(raiz.izq,año,mes,pedido)
+		raiz.izq = izq
+	}else if año > raiz.Año.Año{
+		der:=insertarPedidoArbol(raiz.der,año,mes,pedido)
+		raiz.der = der
+	}else if año == raiz.Año.Año{
 		raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,pedido)
 	}
 	return raiz

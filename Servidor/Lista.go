@@ -6,9 +6,9 @@ type tienda struct {
 	nombre      string
 	descripcion string
 	contacto    string
-	calif int
-	logo string
-	productos *ArbolProducto
+	calif 		int
+	logo 		string
+	productos 	*ArbolProducto
 }
 
 type nodo struct {
@@ -101,4 +101,17 @@ func ascii(a string) int{
 		valor = valor + int(palabra[i])
 	}
 	return valor
+}
+
+func (l *lista) RestarStockLista(t string, codigo int) lista{
+	aux:=l.primero
+	aux2:=newLista()
+	for aux != nil{
+		if aux.tienda.nombre == t{
+			aux.tienda.productos.raiz = RestarStock(aux.tienda.productos.raiz,codigo)
+			insertar(aux.tienda,aux2)
+		}else{insertar(aux.tienda,aux2)}
+		aux = aux.sig
+	}
+	return *aux2
 }

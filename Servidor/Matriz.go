@@ -5,23 +5,23 @@ import(
 )
 
 type nodoPedido struct {
-	Der, Arr, Aba, Izq interface{}
-	dia int
-	NoPedido int
-	Tienda string
-	Categoria string
-	Calificacion int
-	codigos []int
+	Der, Arr, Aba, Izq  interface{}
+	dia 				int
+	NoPedido 			int
+	Tienda 				string
+	Categoria 			string
+	Calificacion 		int
+	codigos 			[]int
 }
 
 type NodoCabeceraVertical struct {
-	Der, Arr, Aba, Izq interface{}
-	Categoria string
+	Der, Arr, Aba, Izq  interface{}
+	Categoria 			string
 }
 
 type NodoCabeceraHorizontal struct {
-	Der, Arr, Aba, Izq interface{}
-	dia int
+	Der, Arr, Aba, Izq  interface{}
+	dia 				int
 }
 
 type Matriz struct {

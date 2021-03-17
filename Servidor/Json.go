@@ -389,7 +389,7 @@ func posicionv3(t TiendasInventario) int{
 	return ter
 }
 
-//Insertar Productos En Tiendas Linealizadas
+//Insertar Pedidos En Arbol Años
 func PedidosJson(t Pedidos) []byte{
 	if vec!=nil{
 		for y:=0;y<len(t.Pedidos);y++{
@@ -404,7 +404,11 @@ func PedidosJson(t Pedidos) []byte{
 				mes := obtenerMes(fecha[1])
 				dia, _ := strconv.Atoi(fecha[0])
 
-				//Codigos Aceptables
+				//Ingresar Año Y Mes
+				añosArbol.InsertarAVLAño(*NewAño(año),y)
+				añosArbol.raiz = insertarMesArbol(añosArbol.raiz,año,mes)
+
+				//Obtener Productos De Tienda solicitada A Consultar
 				codigosAux:=make([]int,0)
 				aux:=vec[i].primero
 				var produtosaux *ArbolProducto
@@ -415,6 +419,7 @@ func PedidosJson(t Pedidos) []byte{
 					}
 					aux = aux.sig
 				}
+				//Obtener Codigos Validos De Pedidos EN Tienda Solicitada
 				if produtosaux!=nil{
 					if produtosaux.raiz != nil{
 						for x:=0;x<len(t.Pedidos[y].Productos);x++{
@@ -433,11 +438,16 @@ func PedidosJson(t Pedidos) []byte{
 							}
 						}
 
-						//Insertar Datos En Matriz
-						añosArbol.InsertarAVLAño(*NewAño(año),y)
-						ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
-						NoPedido++
-						añosArbol.raiz = insertarMesYPedido(añosArbol.raiz,año,mes,ped)
+						//Validar Stock Del Pedido Y Restar Stock Solicitado
+						for x:=0;x<len(t.Pedidos[y].Productos);x++{
+							if ValidarExistencias(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+								vec[i] = vec[i].RestarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+								//Insertar Pedido En Matriz
+								ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
+								NoPedido++
+								añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)
+							}else{fmt.Println("Pedido con condigo de producto: "+strconv.Itoa(t.Pedidos[y].Productos[x].Codigo)+" No Ingresado, Ya Que no se cuenta con Existencias")}
+						}
 					}
 				}
 			}
@@ -450,7 +460,7 @@ func PedidosJson(t Pedidos) []byte{
 	}
 }
 
-//Obtener Posicion Especifica En Inventario
+//Obtener Posicion Especifica En Pedidos
 func posicionv4(t tiendaPedido) int{
 	indice := string(t.Tienda[0])
 	var i int
