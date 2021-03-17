@@ -228,3 +228,16 @@ func RestarStock(raiz *nodoproducto, codigo int) *nodoproducto{
 	}
 	return raiz
 }
+
+func SumarStock(raiz *nodoproducto, codigo int) *nodoproducto{
+	if codigo < raiz.producto.Codigo{
+		izq := SumarStock(raiz.izq,codigo)
+		raiz.izq = izq
+	}else if codigo > raiz.producto.Codigo{
+		der := SumarStock(raiz.der,codigo)
+		raiz.der = der
+	}else if codigo == raiz.producto.Codigo{
+		raiz.producto.Cantidad++
+	}
+	return raiz
+}

@@ -439,14 +439,27 @@ func PedidosJson(t Pedidos) []byte{
 						}
 
 						//Validar Stock Del Pedido Y Restar Stock Solicitado
+						bandera := true
+						contador:=0
 						for x:=0;x<len(t.Pedidos[y].Productos);x++{
 							if ValidarExistencias(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
 								vec[i] = vec[i].RestarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
-								//Insertar Pedido En Matriz
-								ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
-								NoPedido++
-								añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)
-							}else{fmt.Println("Pedido con condigo de producto: "+strconv.Itoa(t.Pedidos[y].Productos[x].Codigo)+" No Ingresado, Ya Que no se cuenta con Existencias")}
+								contador++
+							}else{
+								fmt.Println("Pedido Denegado, Producto con condigo: "+strconv.Itoa(t.Pedidos[y].Productos[x].Codigo)+" No Cuenta Con Existencias Solicitadas")
+								bandera = false
+								break
+							}
+						}
+						if bandera{
+							//Insertar Pedido En Matriz
+							ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
+							NoPedido++
+							añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)
+						}else {
+							for x:=0;x<contador;x++{
+								vec[i] = vec[i].SumarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+							}
 						}
 					}
 				}
