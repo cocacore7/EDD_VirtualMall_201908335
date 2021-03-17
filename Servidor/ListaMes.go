@@ -54,9 +54,7 @@ func (l *listaMes) IngresarPedido(mes string,pedido *nodoPedido) *listaMes {
 	for aux != nil {
 		if mes == aux.Mes.mes{
 			aux.Mes.matriz.Agregar(pedido)
-			NoPedido++
 			insertarMes(aux.Mes,aux2)
-			break
 		}else{
 			insertarMes(aux.Mes,aux2)
 		}

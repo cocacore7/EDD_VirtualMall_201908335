@@ -5,13 +5,17 @@ import(
 )
 
 type nodoPedido struct {
-	Der, Arr, Aba, Izq  interface{}
 	dia 				int
 	NoPedido 			int
 	Tienda 				string
 	Categoria 			string
 	Calificacion 		int
 	codigos 			[]int
+}
+
+type ArregloNodoPedido struct {
+	Der, Arr, Aba, Izq  interface{}
+	Pedidos []nodoPedido
 }
 
 type NodoCabeceraVertical struct {
@@ -30,7 +34,11 @@ type Matriz struct {
 }
 
 func newPedido(dia int, noPedido int, Tienda string, Categoria string, Calificacion int, codigos []int) *nodoPedido{
-	return &nodoPedido{nil,nil,nil,nil,dia,noPedido,Tienda,Categoria,Calificacion,codigos}
+	return &nodoPedido{dia,noPedido,Tienda,Categoria,Calificacion,codigos}
+}
+
+func newArregloPedidos() *ArregloNodoPedido{
+	return &ArregloNodoPedido{nil,nil,nil,nil,nil}
 }
 
 func newMatriz() *Matriz{
@@ -134,17 +142,17 @@ func (this *Matriz) obtenerUltimoV(cabecera *NodoCabeceraHorizontal, Categoria s
 		return cabecera
 	}
 	aux:=cabecera.Aba
-	if Categoria <= aux.(*nodoPedido).Categoria{
+	if Categoria <= aux.(*ArregloNodoPedido).Pedidos[0].Categoria{
 		return cabecera
 	}
-	for aux.(*nodoPedido).Aba != nil{
-		if Categoria > aux.(*nodoPedido).Categoria && Categoria < aux.(*nodoPedido).Aba.(*nodoPedido).Categoria{
+	for aux.(*ArregloNodoPedido).Aba != nil{
+		if Categoria > aux.(*ArregloNodoPedido).Pedidos[0].Categoria && Categoria < aux.(*ArregloNodoPedido).Aba.(*ArregloNodoPedido).Pedidos[0].Categoria{
 			return aux
 		}
-		aux = aux.(*nodoPedido).Aba
+		aux = aux.(*ArregloNodoPedido).Aba
 	}
 	if Categoria <= aux.(*nodoPedido).Categoria{
-		return aux.(*nodoPedido).Arr
+		return aux.(*ArregloNodoPedido).Arr
 	}
 	return aux
 }
@@ -154,17 +162,17 @@ func (this *Matriz) obtenerUltimoH(cabecera *NodoCabeceraVertical, dia int) inte
 		return cabecera
 	}
 	aux:=cabecera.Der
-	if dia <= aux.(*nodoPedido).dia{
+	if dia <= aux.(*ArregloNodoPedido).Pedidos[0].dia{
 		return cabecera
 	}
-	for aux.(*nodoPedido).Der != nil{
-		if dia > aux.(*nodoPedido).dia && dia < aux.(*nodoPedido).Der.(*nodoPedido).dia{
+	for aux.(*ArregloNodoPedido).Der != nil{
+		if dia > aux.(*ArregloNodoPedido).Pedidos[0].dia && dia < aux.(*ArregloNodoPedido).Der.(*ArregloNodoPedido).Pedidos[0].dia{
 			return aux
 		}
-		aux = aux.(*nodoPedido).Der
+		aux = aux.(*ArregloNodoPedido).Der
 	}
-	if dia <= aux.(*nodoPedido).dia{
-		return aux.(*nodoPedido).Izq
+	if dia <= aux.(*ArregloNodoPedido).Pedidos[0].dia{
+		return aux.(*ArregloNodoPedido).Izq
 	}
 	return aux
 }
@@ -180,50 +188,164 @@ func (this *Matriz) Agregar(nueva *nodoPedido){
 	}
 	izquierda:=this.obtenerUltimoH(vertical.(*NodoCabeceraVertical),nueva.dia)
 	superior:= this.obtenerUltimoV(horizontal.(*NodoCabeceraHorizontal),nueva.Categoria)
-	if reflect.TypeOf(izquierda).String()=="*Servidor.nodoPedido"{
-		if izquierda.(*nodoPedido).Der == nil{
-			izquierda.(*nodoPedido).Der=nueva
-			nueva.Izq = izquierda
+	if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
+		if izquierda.(*ArregloNodoPedido).Der == nil{
+			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
+				if superior.(*ArregloNodoPedido).Pedidos[0].dia == izquierda.(*ArregloNodoPedido).Pedidos[0].dia{
+					izquierda.(*ArregloNodoPedido).Pedidos = append(izquierda.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*ArregloNodoPedido).Der=arreglonuevo
+					arreglonuevo.Izq = izquierda
+				}
+			}else{
+				if superior.(*NodoCabeceraHorizontal).dia == izquierda.(*ArregloNodoPedido).Pedidos[0].dia{
+					izquierda.(*ArregloNodoPedido).Pedidos = append(izquierda.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*ArregloNodoPedido).Der=arreglonuevo
+					arreglonuevo.Izq = izquierda
+				}
+			}
 		}else{
-			tmp:= izquierda.(*nodoPedido).Der
-			izquierda.(*nodoPedido).Der = nueva
-			nueva.Izq = izquierda
-			tmp.(*nodoPedido).Izq = nueva
-			nueva.Der = tmp
+			tmp:= izquierda.(*ArregloNodoPedido).Der
+			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
+				if superior.(*ArregloNodoPedido).Pedidos[0].dia == tmp.(*ArregloNodoPedido).Pedidos[0].dia{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					arreglonuevo.Izq = izquierda
+					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
+					arreglonuevo.Der = tmp
+				}
+			}else{
+				if superior.(*NodoCabeceraHorizontal).dia == tmp.(*ArregloNodoPedido).Pedidos[0].dia{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					arreglonuevo.Izq = izquierda
+					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
+					arreglonuevo.Der = tmp
+				}
+			}
 		}
 	}else{
 		if izquierda.(*NodoCabeceraVertical).Der == nil{
-			izquierda.(*NodoCabeceraVertical).Der=nueva
-			nueva.Izq = izquierda
+			arreglonuevo:=newArregloPedidos()
+			arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+			izquierda.(*NodoCabeceraVertical).Der=arreglonuevo
+			arreglonuevo.Izq = izquierda
 		}else{
 			tmp:=izquierda.(*NodoCabeceraVertical).Der
-			izquierda.(*NodoCabeceraVertical).Der = nueva
-			nueva.Izq = izquierda
-			tmp.(*nodoPedido).Izq = nueva
-			nueva.Der = tmp
+			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
+				if superior.(*ArregloNodoPedido).Pedidos[0].dia == tmp.(*ArregloNodoPedido).Pedidos[0].dia{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					arreglonuevo.Izq = izquierda
+					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
+					arreglonuevo.Der = tmp
+				}
+			}else{
+				if superior.(*NodoCabeceraHorizontal).dia == tmp.(*ArregloNodoPedido).Pedidos[0].dia{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					arreglonuevo.Izq = izquierda
+					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
+					arreglonuevo.Der = tmp
+				}
+			}
 		}
 	}
-	if reflect.TypeOf(superior).String()=="*Servidor.nodoPedido"{
-		if superior.(*nodoPedido).Aba == nil{
-			superior.(*nodoPedido).Aba=nueva
-			nueva.Arr = superior
+	if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
+		if superior.(*ArregloNodoPedido).Aba == nil{
+			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
+				if izquierda.(*ArregloNodoPedido).Pedidos[0].Categoria == superior.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					superior.(*ArregloNodoPedido).Pedidos = append(superior.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*ArregloNodoPedido).Aba=arreglonuevo
+					arreglonuevo.Arr = superior
+				}
+			}else{
+				if izquierda.(*NodoCabeceraVertical).Categoria == superior.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					superior.(*ArregloNodoPedido).Pedidos = append(superior.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*ArregloNodoPedido).Aba=arreglonuevo
+					arreglonuevo.Arr = superior
+				}
+			}
 		}else{
-			tmp:= superior.(*nodoPedido).Aba
-			superior.(*nodoPedido).Aba = nueva
-			nueva.Arr = superior
-			tmp.(*nodoPedido).Arr = nueva
-			nueva.Aba = tmp
+			tmp:= superior.(*ArregloNodoPedido).Aba
+			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
+				if izquierda.(*ArregloNodoPedido).Pedidos[0].Categoria == tmp.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*NodoCabeceraVertical).Aba = arreglonuevo
+					arreglonuevo.Arr = superior
+					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
+					arreglonuevo.Aba = tmp
+				}
+			}else{
+				if izquierda.(*NodoCabeceraVertical).Categoria == tmp.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*NodoCabeceraHorizontal).Aba = arreglonuevo
+					arreglonuevo.Arr = superior
+					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
+					arreglonuevo.Aba = tmp
+				}
+			}
 		}
 	}else{
 		if superior.(*NodoCabeceraHorizontal).Aba == nil{
-			superior.(*NodoCabeceraHorizontal).Aba=nueva
-			nueva.Arr = superior
+			arreglonuevo:=newArregloPedidos()
+			arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+			superior.(*NodoCabeceraHorizontal).Aba=arreglonuevo
+			arreglonuevo.Arr = superior
 		}else{
 			tmp:=superior.(*NodoCabeceraHorizontal).Aba
-			superior.(*NodoCabeceraHorizontal).Aba = nueva
-			nueva.Arr = superior
-			tmp.(*nodoPedido).Arr = nueva
-			nueva.Aba = tmp
+			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
+				if izquierda.(*ArregloNodoPedido).Pedidos[0].Categoria == tmp.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*NodoCabeceraHorizontal).Aba = arreglonuevo
+					arreglonuevo.Arr = superior
+					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
+					arreglonuevo.Aba = tmp
+				}
+			}else{
+				if izquierda.(*NodoCabeceraVertical).Categoria == tmp.(*ArregloNodoPedido).Pedidos[0].Categoria{
+					tmp.(*ArregloNodoPedido).Pedidos = append(tmp.(*ArregloNodoPedido).Pedidos, *nueva)
+				}else{
+					arreglonuevo:=newArregloPedidos()
+					arreglonuevo.Pedidos = append(arreglonuevo.Pedidos, *nueva)
+					superior.(*NodoCabeceraHorizontal).Aba = arreglonuevo
+					arreglonuevo.Arr = superior
+					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
+					arreglonuevo.Aba = tmp
+				}
+			}
 		}
 	}
 }

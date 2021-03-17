@@ -155,6 +155,7 @@ func pedidoCarrito(w http.ResponseWriter, r *http.Request){
 	if vec != nil{
 		if ValidarPedidosJsonCarrito(t){
 			a:= PedidosJsonCarrito(t)
+			NoPedido++
 			var v Pedidos
 			_ = json.Unmarshal(a, &v)
 			_ = json.NewEncoder(w).Encode(v)

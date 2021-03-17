@@ -115,7 +115,7 @@ func Crear(data Datos){
 	Indi = make([]string, 0)
 	Depa = make([]string, 0)
 	añosArbol = NewArbolAño()
-	NoPedido = 0
+	NoPedido = 1
 
 	for j:=0; j<len(data.Datos[0].Departamentos);j++{
 		Depa = append(Depa, data.Datos[0].Departamentos[j].Departamentos)
@@ -650,7 +650,6 @@ func PedidosJsonCarrito(t Pedidos) []byte{
 
 						//Insertar Pedido En Matriz
 						ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
-						NoPedido++
 						añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)
 					}
 				}
