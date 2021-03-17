@@ -157,7 +157,7 @@ func insertarAVLProducto(raiz *nodoproducto, producto producto,id int, bandera *
 			}
 		}
 	}else if producto.Codigo == raiz.producto.Codigo{
-		fmt.Println("Dato Repetido, Ya Existe En Arbol")
+		fmt.Println("Codigo: "+strconv.Itoa(producto.Codigo)+" Ya Existe En Arbol De Productos")
 	}
 	return raiz
 }

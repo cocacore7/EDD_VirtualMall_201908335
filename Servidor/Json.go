@@ -2,6 +2,7 @@ package Servidor
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -421,6 +422,7 @@ func PedidosJson(t Pedidos) []byte{
 								bandera := true
 								for z:=0;z<len(codigosAux);z++{
 									if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
+										fmt.Println("El Codigo: "+ strconv.Itoa(t.Pedidos[y].Productos[x].Codigo)+ " Viene repetido Dentro Del Pedido")
 										bandera = false
 										break
 									}

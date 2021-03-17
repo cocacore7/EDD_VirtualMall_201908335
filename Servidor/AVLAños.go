@@ -154,7 +154,7 @@ func insertarAVLAño(raiz *nodoAño, año Año,id int, bandera *bool) *nodoAño{
 			}
 		}
 	}else if año.Año == raiz.Año.Año{
-		fmt.Println("Dato Repetido, Ya Existe En Arbol")
+		fmt.Println("Año: "+strconv.Itoa(año.Año)+" Ya Existe En Arbol De Años")
 	}
 	return raiz
 }
@@ -204,6 +204,7 @@ func insertarMesYPedido(raiz *nodoAño, año int,mes string, pedido *nodoPedido)
 			ban:=true
 			for aux != nil{
 				if aux.Mes.mes == mes{
+					fmt.Println("Mes: "+aux.Mes.mes+" Ya Existe En Lista De Año: "+ strconv.Itoa(año))
 					ban = false
 					break
 				}
@@ -216,7 +217,7 @@ func insertarMesYPedido(raiz *nodoAño, año int,mes string, pedido *nodoPedido)
 			insertarMes(newMes(mes),raiz.Año.mes)
 		}
 
-		//raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,pedido)
+		raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,pedido)
 	}
 	return raiz
 }

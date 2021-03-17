@@ -71,7 +71,7 @@ func (this *Matriz) crearHorizontal(dia int) *NodoCabeceraHorizontal{
 		this.CabH=nueva
 		return nueva
 	}
-	var aux interface{} = this.CabV
+	var aux interface{} = this.CabH
 	if dia < aux.(*NodoCabeceraHorizontal).dia{
 		nueva:=&NodoCabeceraHorizontal{Der:nil, Izq: nil, Aba: nil, Arr: nil,dia: dia}
 		nueva.Der = this.CabH
