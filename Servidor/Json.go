@@ -111,6 +111,8 @@ type productosPedido struct {
 //Linealizacion E Inicializacion AVLAños
 func Crear(data Datos){
 	vec = make([]lista, 0)
+	Indi = make([]string, 0)
+	Depa = make([]string, 0)
 	añosArbol = NewArbolAño()
 	NoPedido = 0
 
@@ -412,25 +414,29 @@ func PedidosJson(t Pedidos) []byte{
 					}
 					aux = aux.sig
 				}
-				if produtosaux.raiz!=nil{
-					for x:=0;x<len(t.Pedidos[y].Productos);x++{
-						if buscarCodigoPedido(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
-							bandera := true
-							for z:=0;z<len(codigosAux);z++{
-								if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
-									bandera = false
-									break
+				if produtosaux!=nil{
+					if produtosaux.raiz != nil{
+						for x:=0;x<len(t.Pedidos[y].Productos);x++{
+							if buscarCodigoPedido(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
+								bandera := true
+								for z:=0;z<len(codigosAux);z++{
+									if codigosAux[z]== t.Pedidos[y].Productos[x].Codigo{
+										bandera = false
+										break
+									}
+								}
+								if bandera{
+									codigosAux = append(codigosAux, t.Pedidos[y].Productos[x].Codigo)
 								}
 							}
-							if bandera{
-								codigosAux = append(codigosAux, t.Pedidos[y].Productos[x].Codigo)
-							}
 						}
-					}
 
-					//Insertar Datos En Matriz
-					añosArbol.InsertarAVLAño(*NewAño(año),y)
-					añosArbol.raiz = insertarMesYPedido(añosArbol.raiz,año,mes,dia,t.Pedidos[y],codigosAux)
+						//Insertar Datos En Matriz
+						añosArbol.InsertarAVLAño(*NewAño(año),y)
+						ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
+						NoPedido++
+						añosArbol.raiz = insertarMesYPedido(añosArbol.raiz,año,mes,ped)
+					}
 				}
 			}
 		}
