@@ -172,11 +172,50 @@ func pedidoCarrito(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//Grafico Arbol De Años
+func GraficoArbolAños(w http.ResponseWriter, r *http.Request){
+	if añosArbol != nil{
+		if añosArbol.raiz != nil{
+			graficarAño(añosArbol)
+			_, _ = fmt.Fprintf(w, "Arbol Generado")
+		}else{
+			_, _ = fmt.Fprintf(w, "No Existen Años Registrados")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Existen Años registrados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+//Grafico Meses De Arbol De Años
+func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
+	if añosArbol != nil{
+		if añosArbol.raiz != nil{
+			vars:=mux.Vars(r)
+			b,_:=strconv.Atoi(vars["año"])
+			if GraficarMeses(añosArbol.raiz,b,false){
+				_, _ = fmt.Fprintf(w, "Arbol Generado")
+			}else{
+				_, _ = fmt.Fprintf(w, "No Existe Año Solicitado En Arbol")
+			}
+		}else{
+			_, _ = fmt.Fprintf(w, "No Existen Años Registrados")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Existen Años registrados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
 func Iniciar(){
 	router := mux.NewRouter()
 	router.HandleFunc("/guardar", guardar).Methods("GET")
 	router.HandleFunc("/getArreglo", getArreglo).Methods("GET")
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
+	router.HandleFunc("/GrafoAños", GraficoArbolAños).Methods("GET")
+	router.HandleFunc("/GrafoMesesAños/{año}", GraficoMesesArbolAños).Methods("GET")
 	router.HandleFunc("/cargartienda", cargar).Methods("POST")
 	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
 	router.HandleFunc("/cargarInventario", inven).Methods("POST")

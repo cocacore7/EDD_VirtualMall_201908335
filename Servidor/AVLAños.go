@@ -165,8 +165,8 @@ func (this *ArbolAño) InsertarAVLAño(año Año,id int) {
 	this.raiz = insertarAVLAño(this.raiz,año,id,a)
 }
 
-func graficarAño(n * ArbolAño, num string){
-	arch, _ := os.Create("archivo"+num+".dot")
+func graficarAño(n * ArbolAño){
+	arch, _ := os.Create("ArbolAños.dot")
 	_, _ = arch.WriteString("digraph G{" + "\n")
 	_, _ = arch.WriteString(`rankdir=UD;` + "\n")
 	_, _ = arch.WriteString(`concentrate=true;` + "\n")
@@ -174,9 +174,9 @@ func graficarAño(n * ArbolAño, num string){
 	_, _ = arch.WriteString("}" + "\n")
 	_ = arch.Close()
 	path, _ := exec.LookPath("dot")
-	cmd, _ := exec.Command(path, "-Tpng", "./archivo"+num+".dot").Output()
+	cmd, _ := exec.Command(path, "-Tpng", "./ArbolAños.dot").Output()
 	mode := 0777
-	_ = ioutil.WriteFile("outfile"+num+".png", cmd, os.FileMode(mode))
+	_ = ioutil.WriteFile("ArbolAños.png", cmd, os.FileMode(mode))
 }
 
 func (this *nodoAño) Interno() string{
@@ -220,7 +220,7 @@ func insertarMesArbol(raiz *nodoAño, año int,mes string) *nodoAño{
 	return raiz
 }
 
-func insertarPedidoArbol(raiz *nodoAño, año int,mes string, pedido *nodoPedido) *nodoAño{
+func insertarPedidoArbol(raiz *nodoAño, año int,mes string, pedido *Pedido) *nodoAño{
 	if año < raiz.Año.Año{
 		izq:=insertarPedidoArbol(raiz.izq,año,mes,pedido)
 		raiz.izq = izq
@@ -231,4 +231,18 @@ func insertarPedidoArbol(raiz *nodoAño, año int,mes string, pedido *nodoPedido
 		raiz.Año.mes = raiz.Año.mes.IngresarPedido(mes,pedido)
 	}
 	return raiz
+}
+
+func GraficarMeses(raiz *nodoAño, año int, bandera bool) bool{
+	if raiz != nil{
+		if año < raiz.Año.Año{
+			bandera = GraficarMeses(raiz.izq,año,bandera)
+		}else if año > raiz.Año.Año{
+			bandera = GraficarMeses(raiz.der,año,bandera)
+		}else if año == raiz.Año.Año{
+			bandera = true
+			raiz.Año.mes.GraficarMeses()
+		}
+	}
+	return bandera
 }
