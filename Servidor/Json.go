@@ -13,6 +13,7 @@ var vec []lista
 var Indi []string
 var Depa []string
 var NoPedido int
+var NodoG int
 
 //---------------------------------------------------------------------------------------------
 //FASE1
@@ -116,6 +117,7 @@ func Crear(data Datos){
 	Depa = make([]string, 0)
 	añosArbol = NewArbolAño()
 	NoPedido = 1
+	NodoG = 0
 
 	for j:=0; j<len(data.Datos[0].Departamentos);j++{
 		Depa = append(Depa, data.Datos[0].Departamentos[j].Departamentos)
@@ -661,6 +663,22 @@ func PedidosJsonCarrito(t Pedidos) []byte{
 		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
 		return crearJson
 	}
+}
+
+//Obtener Tienda En Posicion Especifica
+func graficarArbolP(t unico, bandera bool) bool{
+	i:=posicionv(t)
+	if i < len(vec){
+		a := vec[i].primero
+		for a != nil{
+			if t.Tienda == a.tienda.nombre{
+				bandera = graficar(a.tienda.productos,false)
+				break
+			}
+			a=a.sig
+		}
+	}
+	return bandera
 }
 
 //FASE2

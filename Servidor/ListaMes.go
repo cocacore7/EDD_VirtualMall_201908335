@@ -113,3 +113,28 @@ func (l *listaMes)GraficarMeses(){
 	mode := 0777
 	_ = ioutil.WriteFile("GraficoMeses.png", cmd, os.FileMode(mode))
 }
+
+func (l *listaMes) GraficarMatrizMes(mes string, bandera bool) bool {
+	aux := l.primero
+	for aux != nil {
+		if mes == aux.Mes.mes{
+			aux.Mes.matriz.GraficarMatriz()
+			bandera = true
+			break
+		}
+		aux = aux.sig
+	}
+	return bandera
+}
+
+func (l *listaMes) GraficarColaMatrizMes(mes string,dia int, categoria string, bandera bool) bool {
+	aux := l.primero
+	for aux != nil {
+		if mes == aux.Mes.mes{
+			bandera = aux.Mes.matriz.GraColaM(dia, categoria,false)
+			break
+		}
+		aux = aux.sig
+	}
+	return bandera
+}

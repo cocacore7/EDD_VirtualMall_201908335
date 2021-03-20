@@ -169,23 +169,29 @@ func (this *ArbolProducto) InsertarAVLProducto(producto producto,id int) {
 	this.raiz = insertarAVLProducto(this.raiz,producto,id,a)
 }
 
-func graficar(n * ArbolProducto, num string){
-	arch, _ := os.Create("archivo"+num+".dot")
-	_, _ = arch.WriteString("digraph G{" + "\n")
-	_, _ = arch.WriteString(`rankdir=UD;` + "\n")
-	_, _ = arch.WriteString(`concentrate=true;` + "\n")
-	_, _ = arch.WriteString(n.raiz.Interno())
-	_, _ = arch.WriteString("}" + "\n")
-	_ = arch.Close()
-	path, _ := exec.LookPath("dot")
-	cmd, _ := exec.Command(path, "-Tpng", "./archivo"+num+".dot").Output()
-	mode := 0777
-	_ = ioutil.WriteFile("outfile"+num+".png", cmd, os.FileMode(mode))
+func graficar(n * ArbolProducto, bandera bool) bool{
+	if n!=nil{
+		if n.raiz!=nil{
+			arch, _ := os.Create("ArbolProducto.dot")
+			_, _ = arch.WriteString("digraph G{" + "\n")
+			_, _ = arch.WriteString(`rankdir=UD;` + "\n")
+			_, _ = arch.WriteString(`concentrate=true;` + "\n")
+			_, _ = arch.WriteString(n.raiz.Interno())
+			_, _ = arch.WriteString("}" + "\n")
+			_ = arch.Close()
+			path, _ := exec.LookPath("dot")
+			cmd, _ := exec.Command(path, "-Tpng", "./ArbolProducto.dot").Output()
+			mode := 0777
+			_ = ioutil.WriteFile("ArbolProducto.png", cmd, os.FileMode(mode))
+			bandera=true
+		}
+	}
+	return bandera
 }
 
 func (this *nodoproducto) Interno() string{
 	var etiqueta string
-	etiqueta = "nodo"+strconv.Itoa(this.id)+"[label=\"{Codigo: "+this.producto.Nombre+"|"+strconv.Itoa(this.producto.Codigo)+"|"+strconv.Itoa(this.producto.Precio)+"}|Factor: "+strconv.Itoa(this.Factor)+"\"];\n"
+	etiqueta = "nodo"+strconv.Itoa(this.id)+"[shape=record,label=\"Factor: "+strconv.Itoa(this.Factor)+"|{Codigo: "+strconv.Itoa(this.producto.Codigo)+"|"+this.producto.Nombre+"|Precio: "+strconv.Itoa(this.producto.Precio)+"}|Cantidad: "+strconv.Itoa(this.producto.Cantidad)+"\"];\n"
 	if this.izq != nil{
 		etiqueta+=this.izq.Interno() + "nodo"+strconv.Itoa(this.id)+"->nodo"+strconv.Itoa(this.izq.id)+";\n"
 	}

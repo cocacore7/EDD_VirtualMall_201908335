@@ -246,3 +246,29 @@ func GraficarMeses(raiz *nodoAño, año int, bandera bool) bool{
 	}
 	return bandera
 }
+
+func GraficarMatrizMeses(raiz *nodoAño, año int,mes string, bandera bool) bool{
+	if raiz != nil{
+		if año < raiz.Año.Año{
+			bandera = GraficarMatrizMeses(raiz.izq,año,mes,bandera)
+		}else if año > raiz.Año.Año{
+			bandera = GraficarMatrizMeses(raiz.der,año,mes,bandera)
+		}else if año == raiz.Año.Año{
+			bandera = raiz.Año.mes.GraficarMatrizMes(mes , false)
+		}
+	}
+	return bandera
+}
+
+func GraficarColaMatrizMeses(raiz *nodoAño, año int,mes string,dia int, categoria string, bandera bool) bool{
+	if raiz != nil{
+		if año < raiz.Año.Año{
+			bandera = GraficarColaMatrizMeses(raiz.izq,año,mes,dia,categoria,bandera)
+		}else if año > raiz.Año.Año{
+			bandera = GraficarColaMatrizMeses(raiz.izq,año,mes,dia,categoria,bandera)
+		}else if año == raiz.Año.Año{
+			bandera = raiz.Año.mes.GraficarColaMatrizMes(mes,dia,categoria,false)
+		}
+	}
+	return bandera
+}

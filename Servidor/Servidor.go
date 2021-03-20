@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 )
 
 var Cod int
+var Gaño int
+var Gmes string
 
 //Cargar tiendas En Json
 func cargar(w http.ResponseWriter, r *http.Request){
@@ -174,6 +177,8 @@ func pedidoCarrito(w http.ResponseWriter, r *http.Request){
 
 //Grafico Arbol De Años
 func GraficoArbolAños(w http.ResponseWriter, r *http.Request){
+	Gaño=0
+	Gmes=""
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
 			graficarAño(añosArbol)
@@ -193,9 +198,9 @@ func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
 			vars:=mux.Vars(r)
-			b,_:=strconv.Atoi(vars["año"])
-			if GraficarMeses(añosArbol.raiz,b,false){
-				_, _ = fmt.Fprintf(w, "Arbol Generado")
+			Gaño,_=strconv.Atoi(vars["año"])
+			if GraficarMeses(añosArbol.raiz,Gaño,false){
+				_, _ = fmt.Fprintf(w, "Grafico Meses Generado")
 			}else{
 				_, _ = fmt.Fprintf(w, "No Existe Año Solicitado En Arbol")
 			}
@@ -209,6 +214,83 @@ func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
 	w.WriteHeader(http.StatusFound)
 }
 
+//Grafico Meses De Arbol De Años
+func GraficoMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
+	if añosArbol != nil{
+		if añosArbol.raiz != nil{
+			vars:=mux.Vars(r)
+			Gmes=vars["Mes"]
+			if Gaño != 0{
+				if GraficarMatrizMeses(añosArbol.raiz,Gaño,Gmes,false){
+					_, _ = fmt.Fprintf(w, "Grafico Matriz Generado")
+				}else{
+					_, _ = fmt.Fprintf(w, "No Existen Matriz Solicitada")
+				}
+			}else {
+				_, _ = fmt.Fprintf(w, "No Existe Grafica De Mes Creada")
+			}
+		}else{
+			_, _ = fmt.Fprintf(w, "No Existen Años Registrados")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Existen Años registrados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+//Grafico Meses De Arbol De Años
+func GraficoColaMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
+	if añosArbol != nil{
+		if añosArbol.raiz != nil{
+			vars:=mux.Vars(r)
+			a,_:=strconv.Atoi(vars["dia"])
+			vars2:=mux.Vars(r)
+			b:=vars2["cat"]
+			if Gaño != 0{
+				if Gmes != ""{
+					if GraficarColaMatrizMeses(añosArbol.raiz,Gaño,Gmes,a,b,false){
+						_, _ = fmt.Fprintf(w, "Grafico Cola De Pedidos Generado")
+					}else{
+						_, _ = fmt.Fprintf(w, "Grafico No Generado, Dato Erroneos")
+					}
+				}else{
+					_, _ = fmt.Fprintf(w, "No Existe Grafico Matriz")
+				}
+			}else {
+				_, _ = fmt.Fprintf(w, "No Existe Grafica De Mes Creada")
+			}
+		}else{
+			_, _ = fmt.Fprintf(w, "No Existen Años Registrados")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Existen Años registrados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+//Grafico Arbol De Productos
+func GraficoArbolProductos(w http.ResponseWriter, r *http.Request){
+	var t unico
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusFound)
+	if vec!=nil{
+		_ = json.Unmarshal(body, &t)
+		if graficarArbolP(t,false){
+			_ = json.NewEncoder(w).Encode("Grafico Productos Creado Con Exito")
+		}else {
+			_ = json.NewEncoder(w).Encode("No Existen Productos Cargados En Tienda Solicitada")
+		}
+	}else {
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
 func Iniciar(){
 	router := mux.NewRouter()
 	router.HandleFunc("/guardar", guardar).Methods("GET")
@@ -216,11 +298,15 @@ func Iniciar(){
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
 	router.HandleFunc("/GrafoAños", GraficoArbolAños).Methods("GET")
 	router.HandleFunc("/GrafoMesesAños/{año}", GraficoMesesArbolAños).Methods("GET")
+	router.HandleFunc("/GrafoMatrizMesesAños/{Mes}", GraficoMatrizMesesArbolAños).Methods("GET")
+	router.HandleFunc("/GrafoColaMatrizMesesAños/{dia}/{cat}", GraficoColaMatrizMesesArbolAños).Methods("GET")
 	router.HandleFunc("/cargartienda", cargar).Methods("POST")
 	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
 	router.HandleFunc("/cargarInventario", inven).Methods("POST")
 	router.HandleFunc("/cargarPedido", pedido).Methods("POST")
 	router.HandleFunc("/cargarPedidoCarrito", pedidoCarrito).Methods("POST")
+	router.HandleFunc("/graficarArbolPedidos", GraficoArbolProductos).Methods("POST")
 	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":3000",router))
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":3000",handler))
 }
