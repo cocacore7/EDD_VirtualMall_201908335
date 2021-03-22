@@ -25,8 +25,19 @@ func cargar(w http.ResponseWriter, r *http.Request){
 	w.Header().Set("Content-Type","applicattion/json")
 	w.WriteHeader(http.StatusCreated)
 	_ = json.Unmarshal(body, &data)
-	_ = json.NewEncoder(w).Encode(data)
-	Crear(data)
+	if data.Datos != nil{
+		Crear(data)
+		if vec != nil{
+			_ = json.NewEncoder(w).Encode(data)
+		}else{
+			_ = json.NewEncoder(w).Encode("Archivo Vacio")
+		}
+	}else{
+		_ = json.NewEncoder(w).Encode("Estructura Del Archivo Incorrecta")
+	}
+
+
+
 }
 
 //Generar Grafos
@@ -118,7 +129,11 @@ func inven(w http.ResponseWriter, r *http.Request){
 		a:= Inventario(t)
 		var v Inventarios
 		_ = json.Unmarshal(a, &v)
-		_ = json.NewEncoder(w).Encode(t)
+		if v.Inventarios == nil{
+			_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+		}else{
+			_ = json.NewEncoder(w).Encode(v)
+		}
 	}else{
 		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
 	}
@@ -138,7 +153,12 @@ func pedido(w http.ResponseWriter, r *http.Request){
 		a:= PedidosJson(t)
 		var v Pedidos
 		_ = json.Unmarshal(a, &v)
-		_ = json.NewEncoder(w).Encode(v)
+		if v.Pedidos == nil{
+			_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+		}else{
+			_ = json.NewEncoder(w).Encode(v)
+		}
+
 	}else{
 		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
 	}
@@ -161,7 +181,11 @@ func pedidoCarrito(w http.ResponseWriter, r *http.Request){
 			NoPedido++
 			var v Pedidos
 			_ = json.Unmarshal(a, &v)
-			_ = json.NewEncoder(w).Encode(v)
+			if v.Pedidos == nil{
+				_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+			}else{
+				_ = json.NewEncoder(w).Encode(v)
+			}
 		}else{
 			if Cod == 0{
 				_ = json.NewEncoder(w).Encode("No hay Tiendas Cargadas")
@@ -291,9 +315,24 @@ func GraficoArbolProductos(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+//GuardarProductos
+func guardarProductos(w http.ResponseWriter, _ *http.Request){
+	if vec != nil{
+		var regreso Inventarios
+		a := RegresoProductos()
+		w.Header().Set("Content-Type","applicattion/json")
+		w.WriteHeader(http.StatusAccepted)
+		_ = json.Unmarshal(a, &regreso)
+		_ = json.NewEncoder(w).Encode(regreso)
+	}else{
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
 func Iniciar(){
 	router := mux.NewRouter()
 	router.HandleFunc("/guardar", guardar).Methods("GET")
+	router.HandleFunc("/guardarProductos", guardarProductos).Methods("GET")
 	router.HandleFunc("/getArreglo", getArreglo).Methods("GET")
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
 	router.HandleFunc("/GrafoAños", GraficoArbolAños).Methods("GET")

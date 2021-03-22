@@ -1,13 +1,21 @@
-import React from 'react'
+import React,{useState} from 'react'
 import '../css/Carta.css'
 import { useHistory } from 'react-router-dom';
 
 
 function CartaTiendas(props) {
     let history = useHistory()
-    function handleClick() {
+
+    const enviar = () =>{
+        const mytienda = {
+            "Tienda": props.nombre,
+            "Departamento": props.departamento,
+            "Calificacion": props.calificacion
+        }
+        localStorage.setItem('CartaTienda',JSON.stringify(mytienda))
         history.push("/listaP");
     }
+
     return (
         <div className="column carta">
             <div className="ui card">
@@ -17,14 +25,14 @@ function CartaTiendas(props) {
                 <div className="content">
                     <div className="header">{props.nombre}</div>
                     <div className="meta">
-                        <a>{props.categoria}</a>
+                        <a>Departamento: {props.departamento}</a><br/>
+                        <a>Contacto: {props.contacto}</a>
                     </div>
-                    <div className="description">{props.descripcion}</div>
-                    <div className="ui segment green button center fluid" onClick={handleClick}>Ver Productos</div>
+                    <div className="description">Descripcion: {props.descripcion}</div>
+                    <div className="ui segment green button center fluid" onClick={enviar}>Ver Productos</div>
                 </div>
                 <div className="extra content">
-                    <span className="right floated">Joined in 2021</span>
-                    <span><i className="dollar sign icon" />{props.precio}</span>
+                    <a>Calificacion: {props.calificacion}</a>
                 </div>
             </div>
         </div>

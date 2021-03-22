@@ -1,12 +1,12 @@
 import React from 'react'
-import CartaProductos from "./CartaProducto"
+import CartaCarrito from "./CartaCarrito"
 
-function MosaicoProductos(props) {
+function MosaicoCarrito(props) {
     return (
         <div className="ui inverted segment mosaico container">
             <div className="ui four column link cards row">
-                {props.productos.map((c, index) => (
-                    <CartaProductos nombreTienda={c.NombreTienda}
+            {props.productos.map((c, index) => (
+                    <CartaCarrito nombreTienda={c.NombreTienda}
                         departamento={c.Departamento}
                         calificacion={c.Calificacion}
                         nombre={c.Nombre}
@@ -15,7 +15,6 @@ function MosaicoProductos(props) {
                         precio={c.Precio}
                         cantidad={c.Cantidad}
                         imagen={c.Imagen}
-                        id={c.id}
                         key={c.id}
                     />
                 ))}
@@ -24,4 +23,4 @@ function MosaicoProductos(props) {
     )
 }
 
-export default MosaicoProductos
+export default MosaicoCarrito

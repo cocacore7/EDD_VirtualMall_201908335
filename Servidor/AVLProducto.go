@@ -201,6 +201,34 @@ func (this *nodoproducto) Interno() string{
 	return etiqueta
 }
 
+func ProuctosModificado(this *nodoproducto, productos []Productos) []Productos{
+	if this.izq !=nil{
+		productos = ProuctosModificado(this.izq,productos)
+		productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
+	}
+	if this.der!=nil{
+		productos = ProuctosModificado(this.der,productos)
+		if validar(productos, true, this.producto.Codigo){
+			p:=Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen}
+			productos = append(productos, p)
+		}
+	}
+	if this.izq ==nil && this.der == nil{
+		productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
+	}
+	return productos
+}
+
+func validar(productos []Productos, bandera bool, codigo int)bool{
+	for x:=0;x<len(productos);x++ {
+		if productos[x].Codigo == codigo{
+			bandera = false
+			break
+		}
+	}
+	return bandera
+}
+
 func buscarCodigoPedido(raiz *nodoproducto, codigo int, bandera bool) bool{
 	if codigo < raiz.producto.Codigo{
 		bandera = buscarCodigoPedido(raiz.izq,codigo,bandera)

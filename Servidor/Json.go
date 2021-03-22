@@ -339,6 +339,8 @@ func obtenerT(i int, f int) []Tiendas{
 
 //Insertar Productos En Tiendas Linealizadas
 func Inventario(t Inventarios) []byte{
+	var regreso Inventarios
+	regreso.Inventarios = make([]TiendasInventario,0)
 	if vec!=nil{
 		for y:=0;y<len(t.Inventarios);y++{
 			i := posicionv3(t.Inventarios[y])
@@ -361,6 +363,37 @@ func Inventario(t Inventarios) []byte{
 			}
 		}
 		crearJson, _ := json.Marshal(t)
+		return crearJson
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
+}
+
+//Regresar Productos De Vector Linealizado
+func RegresoProductos() []byte{
+	var regreso Inventarios
+	regreso.Inventarios = make([]TiendasInventario,0)
+	if vec!=nil{
+		contador := 0
+		for x:=0;x<len(Indi);x++{
+			for y:=0;y<len(Depa);y++{
+				var tinv TiendasInventario
+				tinv.Departamento = Depa[y]
+				for z:=0;z<5;z++{
+						aux := vec[contador].primero
+						for aux!=nil{
+							tinv.Tienda = aux.tienda.nombre
+							tinv.Calificacion = aux.tienda.calif
+							tinv.Productos = ProuctosModificado(aux.tienda.productos.raiz,tinv.Productos)
+							aux = aux.sig
+							regreso.Inventarios = append(regreso.Inventarios, tinv)
+						}
+					contador++
+				}
+			}
+		}
+		crearJson, _ := json.Marshal(regreso)
 		return crearJson
 	}else{
 		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")

@@ -4,6 +4,7 @@ import "../css/ImportTiendas.css"
 function UserList() {
     return (
         <div className="ImportTiendas">
+            <br/>
             <div className="ui inverted segment container items">
                 <div className="item">
                     <div className="ui big segment rounded image">
@@ -60,6 +61,7 @@ function UserList() {
                     </div>
                 </div>
             </div>
+            <br/>
         </div>
     )
 }
