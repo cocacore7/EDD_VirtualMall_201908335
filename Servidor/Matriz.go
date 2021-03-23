@@ -370,20 +370,24 @@ func (this *Matriz) getNodos() string{
 	etiqueta := ""
 	C:=1
 	var aux interface{} = this.CabH
-	for aux != nil {
-		etiqueta += aux.(*NodoCabeceraHorizontal).nodog+` [shape=record,color=red,label="` + strconv.Itoa(aux.(*NodoCabeceraHorizontal).dia) + `"];` + "\n"
-		tmp := aux.(*NodoCabeceraHorizontal).Aba
-		for tmp != nil {
-			etiqueta += tmp.(*ArregloNodoPedido).nodog+` [shape=record,color=blue,label="C` + strconv.Itoa(C) + `"];` + "\n"
-			C++
-			tmp = tmp.(*ArregloNodoPedido).Aba
+	if aux != nil{
+		for aux != nil {
+			etiqueta += aux.(*NodoCabeceraHorizontal).nodog+` [shape=record,color=red,label="` + strconv.Itoa(aux.(*NodoCabeceraHorizontal).dia) + `"];` + "\n"
+			tmp := aux.(*NodoCabeceraHorizontal).Aba
+			for tmp != nil {
+				etiqueta += tmp.(*ArregloNodoPedido).nodog+` [shape=record,color=blue,label="C` + strconv.Itoa(C) + `"];` + "\n"
+				C++
+				tmp = tmp.(*ArregloNodoPedido).Aba
+			}
+			aux = aux.(*NodoCabeceraHorizontal).Der
 		}
-		aux = aux.(*NodoCabeceraHorizontal).Der
 	}
 	var aux2 interface{} = this.CabV
-	for aux2 != nil {
-		etiqueta += aux2.(*NodoCabeceraVertical).nodog+` [shape=record,color=green,label="` + aux2.(*NodoCabeceraVertical).Categoria + `"];` + "\n"
-		aux2 = aux2.(*NodoCabeceraVertical).Aba
+	if aux2 != nil{
+		for aux2 != nil {
+			etiqueta += aux2.(*NodoCabeceraVertical).nodog+` [shape=record,color=green,label="` + aux2.(*NodoCabeceraVertical).Categoria + `"];` + "\n"
+			aux2 = aux2.(*NodoCabeceraVertical).Aba
+		}
 	}
 	return etiqueta
 }

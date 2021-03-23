@@ -265,7 +265,7 @@ func GraficarColaMatrizMeses(raiz *nodoAño, año int,mes string,dia int, catego
 		if año < raiz.Año.Año{
 			bandera = GraficarColaMatrizMeses(raiz.izq,año,mes,dia,categoria,bandera)
 		}else if año > raiz.Año.Año{
-			bandera = GraficarColaMatrizMeses(raiz.izq,año,mes,dia,categoria,bandera)
+			bandera = GraficarColaMatrizMeses(raiz.der,año,mes,dia,categoria,bandera)
 		}else if año == raiz.Año.Año{
 			bandera = raiz.Año.mes.GraficarColaMatrizMes(mes,dia,categoria,false)
 		}

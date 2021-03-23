@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import '../css/Carta.css'
 import { useHistory } from 'react-router-dom';
+import { Rating } from 'semantic-ui-react'
 
 
 function CartaTiendas(props) {
@@ -32,7 +33,7 @@ function CartaTiendas(props) {
                     <div className="ui segment green button center fluid" onClick={enviar}>Ver Productos</div>
                 </div>
                 <div className="extra content">
-                    <a>Calificacion: {props.calificacion}</a>
+                    <Rating defaultRating={props.calificacion} maxRating={5} disabled />
                 </div>
             </div>
         </div>

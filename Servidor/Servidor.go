@@ -1,6 +1,8 @@
 package Servidor
 
 import (
+	"bufio"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -8,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -206,7 +209,12 @@ func GraficoArbolAños(w http.ResponseWriter, r *http.Request){
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
 			graficarAño(añosArbol)
-			_, _ = fmt.Fprintf(w, "Arbol Generado")
+			f, _ := os.Open("./ArbolAños.png")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_, _ = fmt.Fprintf(w, encoded)
+			f.Close()
 		}else{
 			_, _ = fmt.Fprintf(w, "No Existen Años Registrados")
 		}
@@ -224,7 +232,12 @@ func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
 			vars:=mux.Vars(r)
 			Gaño,_=strconv.Atoi(vars["año"])
 			if GraficarMeses(añosArbol.raiz,Gaño,false){
-				_, _ = fmt.Fprintf(w, "Grafico Meses Generado")
+				f, _ := os.Open("./GraficoMeses.png")
+				reader := bufio.NewReader(f)
+				contenido, _ := ioutil.ReadAll(reader)
+				encoded := base64.StdEncoding.EncodeToString(contenido)
+				_, _ = fmt.Fprintf(w, encoded)
+				f.Close()
 			}else{
 				_, _ = fmt.Fprintf(w, "No Existe Año Solicitado En Arbol")
 			}
@@ -246,9 +259,14 @@ func GraficoMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 			Gmes=vars["Mes"]
 			if Gaño != 0{
 				if GraficarMatrizMeses(añosArbol.raiz,Gaño,Gmes,false){
-					_, _ = fmt.Fprintf(w, "Grafico Matriz Generado")
+					f, _ := os.Open("./GraficoMatriz.png")
+					reader := bufio.NewReader(f)
+					contenido, _ := ioutil.ReadAll(reader)
+					encoded := base64.StdEncoding.EncodeToString(contenido)
+					_, _ = fmt.Fprintf(w, encoded)
+					f.Close()
 				}else{
-					_, _ = fmt.Fprintf(w, "No Existen Matriz Solicitada")
+					_, _ = fmt.Fprintf(w, "No Existen Matriz Solicitada, Ya que No Habian Productos Cargados"+"\n"+"Carga Productos Y Volver a Cargar Pedido")
 				}
 			}else {
 				_, _ = fmt.Fprintf(w, "No Existe Grafica De Mes Creada")
@@ -274,7 +292,12 @@ func GraficoColaMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 			if Gaño != 0{
 				if Gmes != ""{
 					if GraficarColaMatrizMeses(añosArbol.raiz,Gaño,Gmes,a,b,false){
-						_, _ = fmt.Fprintf(w, "Grafico Cola De Pedidos Generado")
+						f, _ := os.Open("./GraficoColaMatriz.png")
+						reader := bufio.NewReader(f)
+						contenido, _ := ioutil.ReadAll(reader)
+						encoded := base64.StdEncoding.EncodeToString(contenido)
+						_, _ = fmt.Fprintf(w, encoded)
+						f.Close()
 					}else{
 						_, _ = fmt.Fprintf(w, "Grafico No Generado, Dato Erroneos")
 					}
@@ -301,18 +324,23 @@ func GraficoArbolProductos(w http.ResponseWriter, r *http.Request){
 	if err != nil{
 		_, _ = fmt.Fprintf(w, "Error al insertar")
 	}
-	w.Header().Set("Content-Type","applicattion/json")
-	w.WriteHeader(http.StatusFound)
 	if vec!=nil{
 		_ = json.Unmarshal(body, &t)
 		if graficarArbolP(t,false){
-			_ = json.NewEncoder(w).Encode("Grafico Productos Creado Con Exito")
+			f, _ := os.Open("./ArbolProducto.jpg")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_ = json.NewEncoder(w).Encode(encoded)
+			f.Close()
 		}else {
 			_ = json.NewEncoder(w).Encode("No Existen Productos Cargados En Tienda Solicitada")
 		}
 	}else {
 		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
 	}
+	//w.Header().Set("Content-Type","applicattion/json")
+	//w.WriteHeader(http.StatusFound)
 }
 
 //GuardarProductos
@@ -344,7 +372,7 @@ func Iniciar(){
 	router.HandleFunc("/cargarInventario", inven).Methods("POST")
 	router.HandleFunc("/cargarPedido", pedido).Methods("POST")
 	router.HandleFunc("/cargarPedidoCarrito", pedidoCarrito).Methods("POST")
-	router.HandleFunc("/graficarArbolPedidos", GraficoArbolProductos).Methods("POST")
+	router.HandleFunc("/graficarArbolProductos", GraficoArbolProductos).Methods("POST")
 	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":3000",handler))

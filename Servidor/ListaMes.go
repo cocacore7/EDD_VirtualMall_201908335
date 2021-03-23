@@ -118,8 +118,10 @@ func (l *listaMes) GraficarMatrizMes(mes string, bandera bool) bool {
 	aux := l.primero
 	for aux != nil {
 		if mes == aux.Mes.mes{
-			aux.Mes.matriz.GraficarMatriz()
-			bandera = true
+			if aux.Mes.matriz.CabH != nil{
+				aux.Mes.matriz.GraficarMatriz()
+				bandera = true
+			}
 			break
 		}
 		aux = aux.sig

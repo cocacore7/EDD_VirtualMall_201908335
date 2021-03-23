@@ -9,29 +9,31 @@ function CargarArch() {
 
     const cargartiendas = async()=>{
         if (tiendas ===null){
-            console.log("No Hay Archivos Cargados")
+            alert("No Hay Archivos Cargados")
         }else{
             const data = await axios.post("http://localhost:3000/cargartienda",tiendas[0])
             console.log(data.data)
+            alert(JSON.stringify(data.data))
         }
-        
     }
 
     const cargarPedidos = async()=>{
         if (pedidos ===null){
-            console.log("No Hay Archivos Cargados")
+            alert("No Hay Archivos Cargados")
         }else{
             const data = await axios.post("http://localhost:3000/cargarPedido",pedidos[0])
             console.log(data.data)
+            alert(JSON.stringify(data.data))
         }
     }
 
     const cargarinventarios = async()=>{
         if (inventario ===null){
-            console.log("No Hay Archivos Cargados")
+            alert("No Hay Archivos Cargados")
         }else{
             const data = await axios.post("http://localhost:3000/cargarInventario",inventario[0])
             console.log(data.data)
+            alert(JSON.stringify(data.data))
         }
     }
     

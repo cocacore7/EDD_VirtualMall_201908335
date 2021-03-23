@@ -180,9 +180,9 @@ func graficar(n * ArbolProducto, bandera bool) bool{
 			_, _ = arch.WriteString("}" + "\n")
 			_ = arch.Close()
 			path, _ := exec.LookPath("dot")
-			cmd, _ := exec.Command(path, "-Tpng", "./ArbolProducto.dot").Output()
+			cmd, _ := exec.Command(path, "-Tjpg", "./ArbolProducto.dot").Output()
 			mode := 0777
-			_ = ioutil.WriteFile("ArbolProducto.png", cmd, os.FileMode(mode))
+			_ = ioutil.WriteFile("ArbolProducto.jpg", cmd, os.FileMode(mode))
 			bandera=true
 		}
 	}
@@ -202,19 +202,21 @@ func (this *nodoproducto) Interno() string{
 }
 
 func ProuctosModificado(this *nodoproducto, productos []Productos) []Productos{
-	if this.izq !=nil{
-		productos = ProuctosModificado(this.izq,productos)
-		productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
-	}
-	if this.der!=nil{
-		productos = ProuctosModificado(this.der,productos)
-		if validar(productos, true, this.producto.Codigo){
-			p:=Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen}
-			productos = append(productos, p)
+	if this != nil{
+		if this.izq !=nil{
+			productos = ProuctosModificado(this.izq,productos)
+			productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
 		}
-	}
-	if this.izq ==nil && this.der == nil{
-		productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
+		if this.der!=nil{
+			productos = ProuctosModificado(this.der,productos)
+			if validar(productos, true, this.producto.Codigo){
+				p:=Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen}
+				productos = append(productos, p)
+			}
+		}
+		if this.izq ==nil && this.der == nil{
+			productos = append(productos, Productos{Nombre: this.producto.Nombre, Codigo: this.producto.Codigo, Descripcion: this.producto.Descripcion, Precio: this.producto.Precio, Cantidad: this.producto.Cantidad, Imagen: this.producto.Imagen})
+		}
 	}
 	return productos
 }
@@ -230,12 +232,14 @@ func validar(productos []Productos, bandera bool, codigo int)bool{
 }
 
 func buscarCodigoPedido(raiz *nodoproducto, codigo int, bandera bool) bool{
-	if codigo < raiz.producto.Codigo{
-		bandera = buscarCodigoPedido(raiz.izq,codigo,bandera)
-	}else if codigo > raiz.producto.Codigo{
-		bandera = buscarCodigoPedido(raiz.der,codigo,bandera)
-	}else if codigo == raiz.producto.Codigo{
-		bandera = true
+	if raiz != nil{
+		if codigo < raiz.producto.Codigo{
+			bandera = buscarCodigoPedido(raiz.izq,codigo,bandera)
+		}else if codigo > raiz.producto.Codigo{
+			bandera = buscarCodigoPedido(raiz.der,codigo,bandera)
+		}else if codigo == raiz.producto.Codigo{
+			bandera = true
+		}
 	}
 	return bandera
 }

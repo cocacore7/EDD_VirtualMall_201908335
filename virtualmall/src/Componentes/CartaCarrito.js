@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 function CartaCarrito(props) {
     const [productos3, setproductos3] = useState([])
-    const [productos4, setproductos4] = useState([])
+    const productos4 = []
     let history = useHistory()
 
     useEffect(() => {
@@ -29,6 +29,7 @@ function CartaCarrito(props) {
         localStorage.clear("Carrito")
         localStorage.setItem('Carrito',JSON.stringify(productos4))
         history.go("/carrito");
+        alert("Producto Eliminado")
     }
     
     return (
@@ -40,14 +41,15 @@ function CartaCarrito(props) {
                 <div className="content">
                     <div className="header">{props.nombre}</div>
                     <div className="meta">
+                        <a>Codigo: {props.codigo}</a><br/>
                         <a>Departamento: {props.departamento}</a><br/>
-                        <a>Contacto: {props.contacto}</a>
+                        <a>Tienda: {props.nombreTienda}</a>
                     </div>
                     <div className="description">Descripcion: {props.descripcion}</div>
                     <div className="ui segment red button center container" onClick={enviar}>Eliminar</div>
                 </div>
                 <div className="extra content">
-                    <a>Calificacion: {props.calificacion}</a>
+                    <span><i className="dollar sign icon" />{props.precio}</span>
                 </div>
             </div>
         </div>

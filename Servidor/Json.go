@@ -14,6 +14,7 @@ var Indi []string
 var Depa []string
 var NoPedido int
 var NodoG int
+var idenAño = 0
 
 //---------------------------------------------------------------------------------------------
 //FASE1
@@ -388,6 +389,7 @@ func RegresoProductos() []byte{
 							tinv.Productos = ProuctosModificado(aux.tienda.productos.raiz,tinv.Productos)
 							aux = aux.sig
 							regreso.Inventarios = append(regreso.Inventarios, tinv)
+							tinv.Productos = nil
 						}
 					contador++
 				}
@@ -440,7 +442,8 @@ func PedidosJson(t Pedidos) []byte{
 				dia, _ := strconv.Atoi(fecha[0])
 
 				//Ingresar Año Y Mes
-				añosArbol.InsertarAVLAño(*NewAño(año),y)
+				añosArbol.InsertarAVLAño(*NewAño(año),idenAño)
+				idenAño++
 				añosArbol.raiz = insertarMesArbol(añosArbol.raiz,año,mes)
 
 				//Obtener Productos De Tienda solicitada A Consultar
@@ -646,11 +649,12 @@ func PedidosJsonCarrito(t Pedidos) []byte{
 				//Fecha
 				fecha := strings.Split(t.Pedidos[y].Fecha,"-")
 				año, _ := strconv.Atoi(fecha[2])
-				mes := obtenerMes(fecha[1])
+				mes := obtenerMesCarrito(fecha[1])
 				dia, _ := strconv.Atoi(fecha[0])
 
 				//Ingresar Año Y Mes
-				añosArbol.InsertarAVLAño(*NewAño(año),y)
+				añosArbol.InsertarAVLAño(*NewAño(año),idenAño)
+				idenAño++
 				añosArbol.raiz = insertarMesArbol(añosArbol.raiz,año,mes)
 
 				//Obtener Productos De Tienda solicitada A Consultar
@@ -696,6 +700,37 @@ func PedidosJsonCarrito(t Pedidos) []byte{
 		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
 		return crearJson
 	}
+}
+
+//Obtener Mes
+func obtenerMesCarrito(m string) string{
+	switch m {
+	case "1":
+		return "Enero"
+	case "2":
+		return "Febrero"
+	case "3":
+		return "Marzo"
+	case "4":
+		return "Abril"
+	case "5":
+		return "Mayo"
+	case "6":
+		return "Junio"
+	case "7":
+		return "Julio"
+	case "8":
+		return "Agosto"
+	case "9":
+		return "Septiembre"
+	case "10":
+		return "Octubre"
+	case "11":
+		return "Noviembre"
+	case "12":
+		return "Diciembre"
+	}
+	return "Invalido"
 }
 
 //Obtener Tienda En Posicion Especifica
