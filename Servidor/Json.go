@@ -568,6 +568,9 @@ func obtenerMes(m string) string{
 //Insertar Pedidos En Arbol Años
 func ValidarPedidosJsonCarrito(t Pedidos) bool{
 	bandera2:=true
+	var Posiciones = make([]int,0)
+	var Tiendasaux = make([]string,0)
+	var Codigos = make([]int,0)
 	if vec!=nil{
 		for y:=0;y<len(t.Pedidos);y++{
 			i := posicionv4(t.Pedidos[y])
@@ -609,6 +612,9 @@ func ValidarPedidosJsonCarrito(t Pedidos) bool{
 						for x:=0;x<len(t.Pedidos[y].Productos);x++{
 							if ValidarExistencias(produtosaux.raiz,t.Pedidos[y].Productos[x].Codigo,false){
 								vec[i] = vec[i].RestarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
+								Posiciones = append(Posiciones, i)
+								Tiendasaux = append(Tiendasaux, t.Pedidos[y].Tienda)
+								Codigos = append(Codigos, t.Pedidos[y].Productos[x].Codigo)
 								contador++
 							}else{
 								Cod = t.Pedidos[y].Productos[x].Codigo
@@ -617,19 +623,18 @@ func ValidarPedidosJsonCarrito(t Pedidos) bool{
 								break
 							}
 						}
-						if bandera{
-							for x:=0;x<len(t.Pedidos[y].Productos);x++{
-								vec[i] = vec[i].SumarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
-							}
-						}else {
-							for x:=0;x<contador;x++{
-								vec[i] = vec[i].SumarStockLista(t.Pedidos[y].Tienda,t.Pedidos[y].Productos[x].Codigo)
-							}
+						if !bandera{
+							break
 						}
 					}
 				}
 			}
 			if !bandera2{break}
+		}
+		if !bandera2{
+			for x:=0;x<len(Tiendasaux);x++{
+				vec[Posiciones[x]] = vec[Posiciones[x]].SumarStockLista(Tiendasaux[x],Codigos[x])
+			}
 		}
 		return bandera2
 	}else{
@@ -686,7 +691,6 @@ func PedidosJsonCarrito(t Pedidos) []byte{
 								}
 							}
 						}
-
 						//Insertar Pedido En Matriz
 						ped:=newPedido(dia,NoPedido,t.Pedidos[y].Tienda,t.Pedidos[y].Departamento,t.Pedidos[y].Calificacion,codigosAux)
 						añosArbol.raiz = insertarPedidoArbol(añosArbol.raiz,año,mes,ped)

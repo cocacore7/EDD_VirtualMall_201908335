@@ -12,14 +12,16 @@ function UserList() {
     const [dia, setDia]=useState('')
     const [cola, setCola]=useState('')
 
+
     useEffect(() => {
-        async function obtener() {
+        async function mostarAños() {
             const data = await axios.get("http://localhost:3000/GrafoAños") 
             alert(data.data)
             setaños(data.data)
         }
-        obtener()
+        mostarAños()
     },[]);
+
 
     const mostrarMes = async()=>{
         console.log(añom)
@@ -62,6 +64,8 @@ function UserList() {
                     </div>
                 </div>
                 <div className="ui inverted divider" />
+
+
                 <div className="item">
                     <div className="ui big segment rounded image">
                         <img src={`data:Mes/jpeg;base64,${mes}`} width={600} height={600}/>
@@ -77,6 +81,8 @@ function UserList() {
                     </div>
                 </div>
                 <div className="ui inverted divider" />
+
+                
                 <div className="item">
                     <div className="ui big segment rounded image">
                         <img src={`data:Mes/jpeg;base64,${Matriz}`} width={600} height={600}/>

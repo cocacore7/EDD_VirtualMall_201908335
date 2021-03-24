@@ -1,7 +1,16 @@
 import React from 'react'
 
 function CartaProducto(props) {
+    
     const enviar = () =>{
+        var llave = localStorage.getItem('CPedido')
+        if (llave === null || llave === undefined){
+            llave=0
+            localStorage.setItem('CPedido',0)
+        }else{
+            llave++
+            localStorage.setItem('CPedido',llave)
+        }
         const myproducto = {
             "NombreTienda": props.nombreTienda,
             "Departamento": props.departamento,
@@ -12,10 +21,10 @@ function CartaProducto(props) {
             "Precio": props.precio,
             "Cantidad": props.cantidad,
             "Imagen": props.imagen,
-            "id":props.codigo
+            "id":llave
         }
         var datos = localStorage.getItem('Carrito')
-        if (datos == null || datos == undefined){
+        if (datos === null || datos === undefined){
             localStorage.setItem('Carrito',JSON.stringify([myproducto]))
         }else{
             datos = JSON.parse(datos)
@@ -25,6 +34,7 @@ function CartaProducto(props) {
         }
         alert("Producto " + props.nombre + "Añadido")
     }
+
     return (
         <div className="column carta">
             <div className="ui card">
@@ -34,7 +44,7 @@ function CartaProducto(props) {
                 <div className="content">
                     <div className="header">{props.nombre}</div>
                     <div className="meta">
-                        <a>Codigo: {props.codigo}</a><br/>
+                        <p>Codigo: {props.codigo}</p>
                     </div>
                     <div className="description">Descipcion: {props.descripcion}</div>
                     <div className="ui segment green button center fluid" onClick={enviar}>Comprar</div>

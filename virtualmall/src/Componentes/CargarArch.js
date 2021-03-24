@@ -1,12 +1,14 @@
 import React,{useState} from 'react'
-import "../css/ImportTiendas.css"
 import axios from "axios"
+import "../css/ImportTiendas.css"
+
 
 function CargarArch() {
     const [tiendas, setTienda]=useState(null)
     const [pedidos, setPedido]=useState(null)
     const [inventario, setInventario]=useState(null)
 
+    
     const cargartiendas = async()=>{
         if (tiendas ===null){
             alert("No Hay Archivos Cargados")

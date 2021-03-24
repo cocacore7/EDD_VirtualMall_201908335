@@ -1,8 +1,10 @@
 import React,{useEffect,useState} from 'react'
-import MosaicoProductos from "./MosaicoProductos"
+
 import { useHistory } from 'react-router-dom';
-import "../css/ImportTiendas.css"
 import axios from "axios"
+import "../css/ImportTiendas.css"
+import MosaicoProductos from "./MosaicoProductos"
+
 
 function ImportProductos() {
     const [imagenProducto,setImagenP]=useState('')
@@ -11,9 +13,11 @@ function ImportProductos() {
     const tienda = []
     let history = useHistory()
 
+
     function handleClick() {
         history.push("/listaT");
     }
+    
 
     useEffect(() => {
         let CarTienda = localStorage.getItem('CartaTienda')
@@ -76,7 +80,7 @@ function ImportProductos() {
                 <div className="ui segment red button center container" onClick={()=>{handleClick()}}>Regresar</div>
                 <br></br>
                 <div className="ui centered container">
-                    <img src={`data:años/jpeg;base64,${imagenProducto}`} centered class="ui fluid centered rounded image "/>
+                    <img src={`data:años/jpeg;base64,${imagenProducto}`} class="ui fluid centered rounded image "/>
                 </div>
                 <br></br>
                 <MosaicoProductos productos={productos} />

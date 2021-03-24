@@ -18,6 +18,9 @@ var Cod int
 var Gaño int
 var Gmes string
 
+//---------------------------------------------------------------------------------------------
+//FASE1
+
 //Cargar tiendas En Json
 func cargar(w http.ResponseWriter, r *http.Request){
 	var data Datos
@@ -117,6 +120,12 @@ func guardar(w http.ResponseWriter, _ *http.Request){
 		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
 	}
 }
+
+//FASE1
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//FASE2
 
 //Inventario
 func inven(w http.ResponseWriter, r *http.Request){
@@ -356,6 +365,9 @@ func guardarProductos(w http.ResponseWriter, _ *http.Request){
 		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
 	}
 }
+
+//FASE2
+//---------------------------------------------------------------------------------------------
 
 func Iniciar(){
 	router := mux.NewRouter()

@@ -1,12 +1,13 @@
-import React,{useState} from 'react'
-import '../css/Carta.css'
+import React from 'react'
 import { useHistory } from 'react-router-dom';
 import { Rating } from 'semantic-ui-react'
+import '../css/Carta.css'
 
 
 function CartaTiendas(props) {
     let history = useHistory()
 
+    
     const enviar = () =>{
         const mytienda = {
             "Tienda": props.nombre,
@@ -26,8 +27,8 @@ function CartaTiendas(props) {
                 <div className="content">
                     <div className="header">{props.nombre}</div>
                     <div className="meta">
-                        <a>Departamento: {props.departamento}</a><br/>
-                        <a>Contacto: {props.contacto}</a>
+                        <p>Departamento: {props.departamento}</p>
+                        <p>Contacto: {props.contacto}</p>
                     </div>
                     <div className="description">Descripcion: {props.descripcion}</div>
                     <div className="ui segment green button center fluid" onClick={enviar}>Ver Productos</div>

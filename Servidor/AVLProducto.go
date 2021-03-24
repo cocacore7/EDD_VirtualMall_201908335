@@ -250,7 +250,11 @@ func ValidarExistencias(raiz *nodoproducto, codigo int, bandera bool) bool{
 	}else if codigo > raiz.producto.Codigo{
 		bandera = ValidarExistencias(raiz.der,codigo,bandera)
 	}else if codigo == raiz.producto.Codigo{
-		if raiz.producto.Cantidad>0{return true}else{return false}
+		if raiz.producto.Cantidad>0{
+			return true
+		}else{
+			return false
+		}
 	}
 	return bandera
 }

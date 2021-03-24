@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import MosaicoTiendas from "./MosaicoTiendas"
 import "../css/ImportTiendas.css"
-const axios = require('axios')
+import axios from "axios"
 
 
 function ImportTiendas() {

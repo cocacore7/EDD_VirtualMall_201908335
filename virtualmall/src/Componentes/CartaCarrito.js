@@ -5,6 +5,7 @@ function CartaCarrito(props) {
     const [productos3, setproductos3] = useState([])
     const productos4 = []
     let history = useHistory()
+    
 
     useEffect(() => {
         let data = localStorage.getItem('Carrito')
@@ -41,9 +42,9 @@ function CartaCarrito(props) {
                 <div className="content">
                     <div className="header">{props.nombre}</div>
                     <div className="meta">
-                        <a>Codigo: {props.codigo}</a><br/>
-                        <a>Departamento: {props.departamento}</a><br/>
-                        <a>Tienda: {props.nombreTienda}</a>
+                        <p>Codigo: {props.codigo}</p>
+                        <p>Departamento: {props.departamento}</p>
+                        <p>Tienda: {props.nombreTienda}</p>
                     </div>
                     <div className="description">Descripcion: {props.descripcion}</div>
                     <div className="ui segment red button center container" onClick={enviar}>Eliminar</div>

@@ -1,12 +1,14 @@
 import React,{useEffect,useState} from 'react'
+import { useHistory } from 'react-router-dom';
+import axios from "axios"
 import MosaicoCarrito from "./MosaicoCarrito"
 import "../css/ImportTiendas.css"
-import axios from "axios"
-import { useHistory } from 'react-router-dom';
+
 
 function CarritoCompras() {
     const [productos2, setproductos2] = useState([])
     let history = useHistory()
+
 
     useEffect(() => {
         let Carr = localStorage.getItem('Carrito')
@@ -16,6 +18,7 @@ function CarritoCompras() {
         console.log(JSON.parse(Carr))
     },[]);
 
+    
     const enviar = () =>{
         const regreso = []
         for (let index = 0; index < productos2.length; index++) {
@@ -36,11 +39,15 @@ function CarritoCompras() {
         console.log(Solicitud)
         const cargartiendas = async()=>{
             const data = await axios.post("http://localhost:3000/cargarPedidoCarrito",Solicitud)
-            console.log(data)
+
             if (typeof data != "string"){
                 localStorage.clear('Carrito')
+                localStorage.clear('CPedido')
+                alert(JSON.stringify(data.data))
+            }else{
+                alert(data.data)
             }
-            alert(data.data)
+            
         }
         cargartiendas()
         history.go("/carrito");   
