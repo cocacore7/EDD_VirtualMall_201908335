@@ -72,7 +72,7 @@ func (this *Matriz) crearHorizontal(dia int, nodog string) *NodoCabeceraHorizont
 		return nueva
 	}
 	for aux.(*NodoCabeceraHorizontal).Der!=nil{
-		if dia > aux.(*NodoCabeceraHorizontal).dia && dia < aux.(*NodoCabeceraHorizontal).Der.(NodoCabeceraHorizontal).dia{
+		if dia > aux.(*NodoCabeceraHorizontal).dia && dia < aux.(*NodoCabeceraHorizontal).Der.(*NodoCabeceraHorizontal).dia{
 			nueva:=&NodoCabeceraHorizontal{Der:nil, Izq: nil, Aba: nil, Arr: nil,dia: dia, nodog: nodog}
 			tmp:= aux.(*NodoCabeceraHorizontal).Der
 			tmp.(*NodoCabeceraHorizontal).Izq=nueva
@@ -104,7 +104,7 @@ func (this *Matriz) crearVertical(Categoria string, nodog string) *NodoCabeceraV
 		return nueva
 	}
 	for aux.(*NodoCabeceraVertical).Aba != nil{
-		if Categoria > aux.(*NodoCabeceraVertical).Categoria && Categoria <= aux.(*NodoCabeceraVertical).Aba.(NodoCabeceraVertical).Categoria{
+		if Categoria > aux.(*NodoCabeceraVertical).Categoria && Categoria <= aux.(*NodoCabeceraVertical).Aba.(*NodoCabeceraVertical).Categoria{
 			nueva:=&NodoCabeceraVertical{Der:nil, Izq: nil, Aba: nil, Arr: nil,Categoria: Categoria, nodog: nodog}
 			tmp:= aux.(*NodoCabeceraVertical).Aba
 			tmp.(*NodoCabeceraVertical).Arr = nueva
