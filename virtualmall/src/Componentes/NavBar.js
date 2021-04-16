@@ -3,11 +3,11 @@ import { Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import "../css/Nav.css"
 
-const colores=["red","green","blue","grey"]
-const opciones=["Cargar Archivos","Reportes","Lista De Tiendas","Carrito De Compras"]
-const url=["/cargar","/reporte","/listaT","/carrito","/"]
-function NavBar() {
-    const [activo, setactivo] = useState(colores[0])
+function NavBar(props) {
+    const colores=props.colores
+    const opciones=props.opciones
+    const url=props.url
+    const [activo, setactivo] = useState(props.activo)
     return (
         <Menu inverted className="Nav">
             {colores.map((c,index)=>(

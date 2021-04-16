@@ -203,7 +203,7 @@ func (this *Matriz) Agregar(nueva *Pedido){
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
-					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					izquierda.(*ArregloNodoPedido).Der = arreglonuevo
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
@@ -214,7 +214,7 @@ func (this *Matriz) Agregar(nueva *Pedido){
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
-					izquierda.(*NodoCabeceraVertical).Der = arreglonuevo
+					izquierda.(*ArregloNodoPedido).Der = arreglonuevo
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
@@ -286,7 +286,7 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
 					insertarPedido(nueva,arreglonuevo.Cola)
-					superior.(*NodoCabeceraVertical).Aba = arreglonuevo
+					superior.(*ArregloNodoPedido).Aba = arreglonuevo
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp
@@ -298,7 +298,7 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
 					insertarPedido(nueva,arreglonuevo.Cola)
-					superior.(*NodoCabeceraHorizontal).Aba = arreglonuevo
+					superior.(*ArregloNodoPedido).Aba = arreglonuevo
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp

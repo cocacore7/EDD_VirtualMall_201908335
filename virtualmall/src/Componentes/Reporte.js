@@ -1,8 +1,13 @@
 import React,{useEffect,useState} from 'react'
 import "../css/ImportTiendas.css"
 import axios from "axios"
+import NavBar from "../Componentes/NavBar"
 
 function UserList() {
+    const [arbolSC, setArbolSC]=useState('')
+    const [arbolCS, setArbolCS]=useState('')
+    const [arbolC, setArbolC]=useState('')
+    const [grafo, setGrafo]=useState('')
     const [años, setaños]=useState('')
     const [añom, setAñom]=useState('')
     const [mes, setMes]=useState('')
@@ -13,45 +18,128 @@ function UserList() {
     const [cola, setCola]=useState('')
 
 
+    const mostrarASC = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerUsuariosSC")
+        setArbolSC("data:image/png;base64,"+data.data)
+        alert(data.data)
+    }
+
+    const mostrarACS = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerUsuariosCS")
+        setArbolCS("data:image/png;base64,"+data.data)
+        alert(data.data)
+    }
+
+    const mostrarAC = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerUsuariosC")
+        setArbolC("data:image/png;base64,"+data.data)
+        alert(data.data)
+    }
+
+    const mostrarGrafo = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerGrafo")
+        setGrafo("data:image/png;base64,"+data.data)
+        alert(data.data)
+    }
+
     useEffect(() => {
         async function mostarAños() {
             const data = await axios.get("http://localhost:3000/GrafoAños") 
             alert(data.data)
-            setaños(data.data)
+            setaños("data:image/png;base64,"+data.data)
         }
         mostarAños()
     },[]);
 
 
     const mostrarMes = async()=>{
-        console.log(añom)
+
         const data = await axios.get("http://localhost:3000/GrafoMesesAños/"+añom)
-        setMes(data.data)
+        setMes("data:image/png;base64,"+data.data)
         alert(data.data)
     }
 
     const mostrarMatriz = async(event)=>{
-        console.log(mesm)
+
         const data = await axios.get("http://localhost:3000/GrafoMatrizMesesAños/"+mesm)
-        setMatriz(data.data)
+        setMatriz("data:image/png;base64,"+data.data)
         alert(data.data)
     }
 
     const mostrarCola = async(event)=>{
-        console.log(categoria)
-        console.log(dia)
+
         const data = await axios.get("http://localhost:3000/GrafoColaMatrizMesesAños/"+dia+"/"+categoria)
-        setCola(data.data)
+        setCola("data:image/png;base64,"+data.data)
         alert(data.data)
     }
 
     return (
+        <>
+        <NavBar 
+            colores={["red","green","blue","grey"]}
+            opciones={["Cargar Archivos","Reportes","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/cargar","/reporte","/iniciosesion","/iniciosesion"]}
+            activo={"green"}
+        />
         <div className="ImportTiendas">
             <br/>
             <div className="ui inverted segment container items">
+
                 <div className="item">
                     <div className="ui big segment rounded image">
-                        <img src={`data:años/jpeg;base64,${años}`} width={600} height={600}/>
+                        <img src={arbolSC} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Sin Cifrar</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarASC()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={arbolCS} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Cifrado Simple</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarACS()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={arbolC} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Cifrado</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarAC()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={grafo} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Grafo</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarGrafo()}}>Cargar Grafo</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={años} width={600} height={600}/>
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Años</h1>
@@ -68,7 +156,7 @@ function UserList() {
 
                 <div className="item">
                     <div className="ui big segment rounded image">
-                        <img src={`data:Mes/jpeg;base64,${mes}`} width={600} height={600}/>
+                        <img src={mes} width={600} height={600}/>
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Mes</h1>
@@ -85,7 +173,7 @@ function UserList() {
                 
                 <div className="item">
                     <div className="ui big segment rounded image">
-                        <img src={`data:Mes/jpeg;base64,${Matriz}`} width={600} height={600}/>
+                        <img src={Matriz} width={600} height={600}/>
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Matriz De Pedidos</h1>
@@ -101,7 +189,7 @@ function UserList() {
                 <div className="ui inverted divider" />
                 <div className="item">
                     <div className="ui big segment rounded image">
-                        <img src={`data:Mes/jpeg;base64,${cola}`} width={600} height={600}/>
+                        <img src={cola} width={600} height={600}/>
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Cola De Pedidos</h1>
@@ -110,6 +198,7 @@ function UserList() {
             </div>
             <br/>
         </div>
+        </>
     )
 }
 

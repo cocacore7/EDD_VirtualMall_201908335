@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from "axios"
 import MosaicoCarrito from "./MosaicoCarrito"
 import "../css/ImportTiendas.css"
+import NavBar from "../Componentes/NavBar"
 
 
 function CarritoCompras() {
@@ -41,8 +42,8 @@ function CarritoCompras() {
             const data = await axios.post("http://localhost:3000/cargarPedidoCarrito",Solicitud)
 
             if (typeof data != "string"){
-                localStorage.clear('Carrito')
-                localStorage.clear('CPedido')
+                localStorage.removeItem('Carrito')
+                localStorage.removeItem('CPedido')
                 alert(JSON.stringify(data.data))
             }else{
                 alert(data.data)
@@ -54,6 +55,13 @@ function CarritoCompras() {
     }
     
     return (
+        <>
+        <NavBar 
+            colores={["red","green","blue","grey"]}
+            opciones={["Tiendas","Carrito De Compras","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/listaT","/carrito","/iniciosesion","/iniciosesion"]}
+            activo={"green"}
+        />
         <div>
             <div className="ImportTiendas">
                 <br></br>
@@ -63,6 +71,7 @@ function CarritoCompras() {
                 <br></br>
             </div>
         </div>
+        </>
     )
 }
 

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import axios from "axios"
 import "../css/ImportTiendas.css"
 import MosaicoProductos from "./MosaicoProductos"
+import NavBar from "../Componentes/NavBar"
 
 
 function ImportProductos() {
@@ -67,26 +68,34 @@ function ImportProductos() {
                 alert("No Existen Productos Cargados")
             }
             const data2 = await axios.post("http://localhost:3000/graficarArbolProductos",peticionImagen);
-            setImagenP(data2.data)
+            setImagenP("data:image/png;base64,"+data2.data)
         }
         obtener()
 
     },[]);
 
     return (
+        <>
+        <NavBar 
+            colores={["red","green","blue","grey"]}
+            opciones={["Tiendas","Carrito De Compras","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/listaT","/carrito","/iniciosesion","/iniciosesion"]}
+            activo={"red"}
+        />
         <div>
             <div className="ImportTiendas">
                 <br></br>
                 <div className="ui segment red button center container" onClick={()=>{handleClick()}}>Regresar</div>
                 <br></br>
                 <div className="ui centered container">
-                    <img src={`data:años/jpeg;base64,${imagenProducto}`} class="ui fluid centered rounded image "/>
+                    <img src={imagenProducto} class="ui fluid centered rounded image "/>
                 </div>
                 <br></br>
                 <MosaicoProductos productos={productos} />
                 <br></br>
             </div>
         </div>
+        </>
     )
 }
 

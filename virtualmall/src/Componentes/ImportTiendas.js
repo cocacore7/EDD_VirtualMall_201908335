@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react'
 import MosaicoTiendas from "./MosaicoTiendas"
 import "../css/ImportTiendas.css"
 import axios from "axios"
+import NavBar from "../Componentes/NavBar"
 
 
 function ImportTiendas() {
@@ -39,6 +40,13 @@ function ImportTiendas() {
         obtener()
     },[]);
     return (
+        <>
+        <NavBar 
+            colores={["red","green","blue","grey"]}
+            opciones={["Tiendas","Carrito De Compras","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/listaT","/carrito","/iniciosesion","/iniciosesion"]}
+            activo={"red"}
+        />
         <div>
             <div className="ImportTiendas">
                 <br></br>
@@ -46,6 +54,7 @@ function ImportTiendas() {
                 <br></br>
             </div>
         </div>
+        </>
     )
 }
 

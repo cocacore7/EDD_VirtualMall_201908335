@@ -15,6 +15,7 @@ type producto struct {
 	Precio int
 	Cantidad int
 	Imagen string
+	Almacenamiento string
 }
 
 type nodoproducto struct {
@@ -37,8 +38,8 @@ func NewNodoProducto(producto producto,id int) *nodoproducto{
 	return &nodoproducto{producto,0,id,nil,nil}
 }
 
-func NewProducto(nombre string, codigo int, descripcion string, precio int, cantidad int, imagen string ) *producto{
-	return &producto{nombre,codigo,descripcion,precio,cantidad,imagen}
+func NewProducto(nombre string, codigo int, descripcion string, precio int, cantidad int, imagen string, almacenamiento string ) *producto{
+	return &producto{nombre,codigo,descripcion,precio,cantidad,imagen,almacenamiento}
 }
 
 func rotIIProducto(n *nodoproducto,n1 *nodoproducto) *nodoproducto{
@@ -191,7 +192,7 @@ func graficar(n * ArbolProducto, bandera bool) bool{
 
 func (this *nodoproducto) Interno() string{
 	var etiqueta string
-	etiqueta = "nodo"+strconv.Itoa(this.id)+"[shape=record,label=\"Factor: "+strconv.Itoa(this.Factor)+"|{Codigo: "+strconv.Itoa(this.producto.Codigo)+"|"+this.producto.Nombre+"|Precio: "+strconv.Itoa(this.producto.Precio)+"}|Cantidad: "+strconv.Itoa(this.producto.Cantidad)+"\"];\n"
+	etiqueta = "nodo"+strconv.Itoa(this.id)+"[shape=record,label=\"Factor: "+strconv.Itoa(this.Factor)+"|{Codigo: "+strconv.Itoa(this.producto.Codigo)+"|"+this.producto.Nombre+"|Almacenamiento: "+this.producto.Almacenamiento+"|Precio: "+strconv.Itoa(this.producto.Precio)+"}|Cantidad: "+strconv.Itoa(this.producto.Cantidad)+"\"];\n"
 	if this.izq != nil{
 		etiqueta+=this.izq.Interno() + "nodo"+strconv.Itoa(this.id)+"->nodo"+strconv.Itoa(this.izq.id)+";\n"
 	}

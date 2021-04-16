@@ -10,6 +10,8 @@ import (
 
 var añosArbol *ArbolAño
 var vec []lista
+var usuarios *ArbolB
+var grafo *ListaAdyacencia
 var Indi []string
 var Depa []string
 var NoPedido int
@@ -86,6 +88,7 @@ type Productos struct {
 	Precio 			int 	`json:"Precio"`
 	Cantidad 		int 	`json:"Cantidad"`
 	Imagen 			string  `json:"Imagen"`
+	Almacenamiento 	string 	`json:"Almacenamiento"`
 }
 
 type Pedidos struct {
@@ -97,6 +100,7 @@ type tiendaPedido struct {
 	Tienda 			string 				`json:"Tienda"`
 	Departamento 	string 				`json:"Departamento"`
 	Calificacion 	int    				`json:"Calificacion"`
+	Cliente 		int 				`json:"Cliente"`
 	Productos 		[]productosPedido   `json:"Productos"`
 }
 
@@ -104,8 +108,41 @@ type productosPedido struct {
 	Codigo int `json:"Codigo"`
 }
 
-
 //FASE2
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//FASE3
+
+type Usuarios struct {
+	Usuarios []Usuario `json:"Usuarios"`
+}
+
+type Usuario struct {
+	Dpi 			int 				`json:"Dpi"`
+	Nombre 			string 				`json:"Nombre"`
+	Correo 			string 				`json:"Correo"`
+	Password 		string 				`json:"Password"`
+	Cuenta 			string 				`json:"Cuenta"`
+}
+
+type Grafo struct {
+	Nodos 					[]Nodo 		`json:"Nodos"`
+	PosicionInicialRobot 	string 		`json:"PosicionInicialRobot"`
+	Entrega 				string 		`json:"Entrega"`
+}
+
+type Nodo struct {
+	Nombre 			string 				`json:"Nombre"`
+	Enlaces 		[]Enlace 			`json:"Enlaces"`
+}
+
+type Enlace struct {
+	Nombre 			string 				`json:"Nombre"`
+	Distancia 		int 				`json:"Distancia"`
+}
+
+//FASE3
 //---------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------
@@ -183,7 +220,7 @@ func posiciont(t unico) Tiendas{
 
 //Obtener Posicion Especifica En posiciont
 func posicionv(t unico) int{
-	indice := string(t.Tienda[0])
+	indice := strings.ToUpper(string(t.Tienda[0]))
 	var i int
 	var c int
 	for a:=0;a<len(Indi);a++{
@@ -260,7 +297,7 @@ func Eliminar(t unico2) []byte{
 
 //Obtener Posicion Especifica En Eliminar
 func posicionv2(t unico2) int{
-	indice := string(t.Tienda[0])
+	indice := strings.ToUpper(string(t.Tienda[0]))
 	var i int
 	var c int
 	for a:=0;a<len(Indi);a++{
@@ -339,6 +376,7 @@ func obtenerT(i int, f int) []Tiendas{
 //FASE2
 
 //Insertar Productos En Tiendas Linealizadas
+
 func Inventario(t Inventarios) []byte{
 	var regreso Inventarios
 	regreso.Inventarios = make([]TiendasInventario,0)
@@ -354,7 +392,7 @@ func Inventario(t Inventarios) []byte{
 					for a != nil{
 						if t.Inventarios[y].Tienda == a.tienda.nombre{
 							for x:=0;x<len(t.Inventarios[y].Productos);x++{
-								p := NewProducto(t.Inventarios[y].Productos[x].Nombre,t.Inventarios[y].Productos[x].Codigo,t.Inventarios[y].Productos[x].Descripcion,t.Inventarios[y].Productos[x].Precio,t.Inventarios[y].Productos[x].Cantidad,t.Inventarios[y].Productos[x].Imagen)
+								p := NewProducto(t.Inventarios[y].Productos[x].Nombre,t.Inventarios[y].Productos[x].Codigo,t.Inventarios[y].Productos[x].Descripcion,t.Inventarios[y].Productos[x].Precio,t.Inventarios[y].Productos[x].Cantidad,t.Inventarios[y].Productos[x].Imagen,t.Inventarios[y].Productos[x].Almacenamiento)
 								a.tienda.productos.InsertarAVLProducto(*p,x+1)
 							}
 						}
@@ -372,6 +410,7 @@ func Inventario(t Inventarios) []byte{
 }
 
 //Regresar Productos De Vector Linealizado
+
 func RegresoProductos() []byte{
 	var regreso Inventarios
 	regreso.Inventarios = make([]TiendasInventario,0)
@@ -405,7 +444,7 @@ func RegresoProductos() []byte{
 
 //Obtener Posicion Especifica En Inventario
 func posicionv3(t TiendasInventario) int{
-	indice := string(t.Tienda[0])
+	indice := strings.ToUpper(string(t.Tienda[0]))
 	var i int
 	var c int
 	for a:=0;a<len(Indi);a++{
@@ -427,6 +466,7 @@ func posicionv3(t TiendasInventario) int{
 }
 
 //Insertar Pedidos En Arbol Años Desde Administrador
+
 func PedidosJson(t Pedidos) []byte{
 	if vec!=nil{
 		for y:=0;y<len(t.Pedidos);y++{
@@ -513,7 +553,7 @@ func PedidosJson(t Pedidos) []byte{
 
 //Obtener Posicion Especifica En Pedidos
 func posicionv4(t tiendaPedido) int{
-	indice := string(t.Tienda[0])
+	indice := strings.ToUpper(string(t.Tienda[0]))
 	var i int
 	var c int
 	for a:=0;a<len(Indi);a++{
@@ -566,6 +606,7 @@ func obtenerMes(m string) string{
 }
 
 //Insertar Pedidos En Arbol Años
+
 func ValidarPedidosJsonCarrito(t Pedidos) bool{
 	bandera2:=true
 	var Posiciones = make([]int,0)
@@ -643,6 +684,7 @@ func ValidarPedidosJsonCarrito(t Pedidos) bool{
 }
 
 //Insertar Pedidos En Arbol Años Desde Carrito
+
 func PedidosJsonCarrito(t Pedidos) []byte{
 	if vec!=nil{
 		for y:=0;y<len(t.Pedidos);y++{
@@ -754,4 +796,86 @@ func graficarArbolP(t unico, bandera bool) bool{
 }
 
 //FASE2
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//FASE3
+
+//Crear y Agregar Usuarios Al Arbol B
+
+func AgregarUsuarios(t Usuarios) []byte{
+	if usuarios == nil{
+		usuarios = NewArbolB(5)
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+		usuarios.InsertarAB(a,true)
+	}
+	for i:=0;i<len(t.Usuarios);i++{
+		a:= NewKeyAB(t.Usuarios[i])
+		usuarios.InsertarAB(a,true)
+	}
+	crearJson, _ := json.Marshal(t)
+	return crearJson
+}
+
+//Agregar Usuario al Arbol B
+
+func CrearUsuario(t Usuario) bool{
+	if usuarios == nil{
+		usuarios = NewArbolB(5)
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+		usuarios.InsertarAB(a,true)
+	}
+	a:= NewKeyAB(t)
+	b:=usuarios.InsertarAB(a,true)
+	if b {
+		return true
+	}else{
+		return false
+	}
+}
+
+//Buscar Usuario al Arbol B
+
+func BuscarUsuario(t Usuario) Usuario{
+	if usuarios == nil{
+		usuarios = NewArbolB(5)
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+		usuarios.InsertarAB(a,true)
+	}
+	a:= NewKeyAB(t)
+	b:=usuarios.BuscarAB(a)
+	return b
+}
+
+//Eliminar Usuario Del Arbol B
+
+func EliminarUsuario(t Usuario) []byte{
+	//Eliminar Usuario
+	crearJson, _ := json.Marshal(t)
+	return crearJson
+}
+
+//Grafo dirigido
+func definirGrafo(t Grafo) []byte{
+	grafo = NewListaAdyacencia(t.PosicionInicialRobot,t.Entrega)
+	for i:=0;i<len(t.Nodos);i++ {
+		grafo.Insertar(t.Nodos[i].Nombre,0)
+		for j:=0;j<len(t.Nodos[i].Enlaces);j++{
+			grafo.Insertar(t.Nodos[i].Enlaces[j].Nombre,t.Nodos[i].Enlaces[j].Distancia)
+			grafo.enlazar(t.Nodos[i].Nombre,t.Nodos[i].Enlaces[j].Nombre)
+		}
+	}
+	crearJson, _ := json.Marshal(t)
+	return crearJson
+}
+
+func dibujarGrafo() bool{
+	if grafo !=nil{
+		grafo.dibujar()
+		return true
+	}
+	return false
+}
+
+//FASE3
 //---------------------------------------------------------------------------------------------

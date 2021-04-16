@@ -212,6 +212,7 @@ func pedidoCarrito(w http.ResponseWriter, r *http.Request){
 }
 
 //Grafico Arbol De Años
+
 func GraficoArbolAños(w http.ResponseWriter, r *http.Request){
 	Gaño=0
 	Gmes=""
@@ -235,6 +236,7 @@ func GraficoArbolAños(w http.ResponseWriter, r *http.Request){
 }
 
 //Grafico Meses De Arbol De Años
+
 func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
@@ -261,6 +263,7 @@ func GraficoMesesArbolAños(w http.ResponseWriter, r *http.Request){
 }
 
 //Grafico Meses De Arbol De Años
+
 func GraficoMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
@@ -291,6 +294,7 @@ func GraficoMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 }
 
 //Grafico Meses De Arbol De Años
+
 func GraficoColaMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 	if añosArbol != nil{
 		if añosArbol.raiz != nil{
@@ -327,6 +331,7 @@ func GraficoColaMatrizMesesArbolAños(w http.ResponseWriter, r *http.Request){
 }
 
 //Grafico Arbol De Productos
+
 func GraficoArbolProductos(w http.ResponseWriter, r *http.Request){
 	var t unico
 	body, err := ioutil.ReadAll(r.Body)
@@ -369,23 +374,210 @@ func guardarProductos(w http.ResponseWriter, _ *http.Request){
 //FASE2
 //---------------------------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------------------------
+//FASE3
+
+//Usuarios
+func usua(w http.ResponseWriter, r *http.Request){
+	var t Usuarios
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	a:= AgregarUsuarios(t)
+	var v Usuarios
+	_ = json.Unmarshal(a, &v)
+	if v.Usuarios == nil{
+		_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+	}else{
+		_ = json.NewEncoder(w).Encode(v)
+	}
+}
+
+func crearusua(w http.ResponseWriter, r *http.Request){
+	var t Usuario
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	a:= CrearUsuario(t)
+	if a{
+		_ = json.NewEncoder(w).Encode("Usuario Ingresado Con Exito")
+	}else{
+		_ = json.NewEncoder(w).Encode("El DPI Ya Existe, Ingrese uno distinto")
+	}
+}
+
+func buscarusua(w http.ResponseWriter, r *http.Request) {
+	var t Usuario
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type", "applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	a := BuscarUsuario(t)
+	if a.Nombre != "" && a.Nombre != "NoContra"{
+		crearJson, _ := json.Marshal(a)
+		var Usu Usuario
+		_ = json.Unmarshal(crearJson, &Usu)
+		_ = json.NewEncoder(w).Encode(Usu)
+	}else if a.Nombre=="NoContra"{
+		_ = json.NewEncoder(w).Encode("Contraseña Incorrecta")
+	}else{
+		_ = json.NewEncoder(w).Encode("Usuario No Encontrado")
+	}
+}
+
+func elimusua(w http.ResponseWriter, r *http.Request){
+	var t Usuario
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	a:= EliminarUsuario(t)
+	var v Usuario
+	_ = json.Unmarshal(a, &v)
+	if v.Dpi == 0{
+		_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+	}else{
+		_ = json.NewEncoder(w).Encode(v)
+	}
+}
+
+func grafarbSC(w http.ResponseWriter, r *http.Request){
+	if usuarios !=nil{
+		usuarios.GraficarABSC()
+		f, _ := os.Open("./ArbolSC.png")
+		reader := bufio.NewReader(f)
+		contenido, _ := ioutil.ReadAll(reader)
+		encoded := base64.StdEncoding.EncodeToString(contenido)
+		_, _ = fmt.Fprintf(w, encoded)
+		f.Close()
+	}else{
+		_, _ = fmt.Fprintf(w, "No Exisen Usuarios Creados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+func grafarbCS(w http.ResponseWriter, r *http.Request){
+	if usuarios !=nil{
+		usuarios.GraficarABCS()
+		f, _ := os.Open("./ArbolCS.png")
+		reader := bufio.NewReader(f)
+		contenido, _ := ioutil.ReadAll(reader)
+		encoded := base64.StdEncoding.EncodeToString(contenido)
+		_, _ = fmt.Fprintf(w, encoded)
+		f.Close()
+	}else{
+		_, _ = fmt.Fprintf(w, "No Exisen Usuarios Creados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+func grafarbC(w http.ResponseWriter, r *http.Request){
+	if usuarios !=nil{
+		usuarios.GraficarABC()
+		f, _ := os.Open("./ArbolC.png")
+		reader := bufio.NewReader(f)
+		contenido, _ := ioutil.ReadAll(reader)
+		encoded := base64.StdEncoding.EncodeToString(contenido)
+		_, _ = fmt.Fprintf(w, encoded)
+		f.Close()
+	}else{
+		_, _ = fmt.Fprintf(w, "No Exisen Usuarios Creados")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+//Grafo
+func graf(w http.ResponseWriter, r *http.Request){
+	var t Grafo
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	a:= definirGrafo(t)
+	var v Grafo
+	_ = json.Unmarshal(a, &v)
+	if v.PosicionInicialRobot == ""{
+		_ = json.NewEncoder(w).Encode("Archivo Con Estructura Incorrecta")
+	}else{
+		_ = json.NewEncoder(w).Encode(v)
+	}
+}
+
+//Retornar Imagen Grafo
+func retgraf(w http.ResponseWriter, r *http.Request){
+	if dibujarGrafo() !=false{
+		f, _ := os.Open("./Grafo.png")
+		reader := bufio.NewReader(f)
+		contenido, _ := ioutil.ReadAll(reader)
+		encoded := base64.StdEncoding.EncodeToString(contenido)
+		_, _ = fmt.Fprintf(w, encoded)
+		f.Close()
+	}else{
+		_, _ = fmt.Fprintf(w, "No Existe Una Estructura De Grafo Cargada")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+//FASE3
+//---------------------------------------------------------------------------------------------
+
+
+//ENDPOINTS
+
 func Iniciar(){
 	router := mux.NewRouter()
+	//FASE1
 	router.HandleFunc("/guardar", guardar).Methods("GET")
-	router.HandleFunc("/guardarProductos", guardarProductos).Methods("GET")
 	router.HandleFunc("/getArreglo", getArreglo).Methods("GET")
 	router.HandleFunc("/id/{numero}", tiendaN).Methods("GET")
+	router.HandleFunc("/cargartienda", cargar).Methods("POST")
+	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
+	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
+
+	//FASE2
+	router.HandleFunc("/guardarProductos", guardarProductos).Methods("GET")
 	router.HandleFunc("/GrafoAños", GraficoArbolAños).Methods("GET")
 	router.HandleFunc("/GrafoMesesAños/{año}", GraficoMesesArbolAños).Methods("GET")
 	router.HandleFunc("/GrafoMatrizMesesAños/{Mes}", GraficoMatrizMesesArbolAños).Methods("GET")
 	router.HandleFunc("/GrafoColaMatrizMesesAños/{dia}/{cat}", GraficoColaMatrizMesesArbolAños).Methods("GET")
-	router.HandleFunc("/cargartienda", cargar).Methods("POST")
-	router.HandleFunc("/TiendaEspecifica", tiendaE).Methods("POST")
 	router.HandleFunc("/cargarInventario", inven).Methods("POST")
 	router.HandleFunc("/cargarPedido", pedido).Methods("POST")
 	router.HandleFunc("/cargarPedidoCarrito", pedidoCarrito).Methods("POST")
 	router.HandleFunc("/graficarArbolProductos", GraficoArbolProductos).Methods("POST")
-	router.HandleFunc("/Eliminar", elim).Methods("DELETE")
+
+	//FASE3
+	router.HandleFunc("/ObtenerUsuariosSC", grafarbSC).Methods("GET")
+	router.HandleFunc("/ObtenerUsuariosCS", grafarbCS).Methods("GET")
+	router.HandleFunc("/ObtenerUsuariosC", grafarbC).Methods("GET")
+	router.HandleFunc("/ObtenerGrafo", retgraf).Methods("GET")
+	router.HandleFunc("/CargarUsuarios", usua).Methods("POST")
+	router.HandleFunc("/CrearUsuario", crearusua).Methods("POST")
+	router.HandleFunc("/BuscarUsuario", buscarusua).Methods("POST")
+	router.HandleFunc("/EliminarUsuario", elimusua).Methods("POST")
+	router.HandleFunc("/CargarGrafo", graf).Methods("POST")
+
+
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":3000",handler))
 }
