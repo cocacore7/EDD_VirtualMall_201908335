@@ -832,8 +832,7 @@ func CrearUsuario(t Usuario) bool{
 		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: hex.EncodeToString(hash[:]),Cuenta: "Admin"})
 		usuarios.InsertarAB(a,true)
 	}
-	contraseña := sha256.Sum256([]byte(t.Password))
-	a := NewKeyAB(Usuario{Dpi: t.Dpi,Nombre: t.Nombre,Correo: t.Correo,Password: hex.EncodeToString(contraseña[:]),Cuenta: t.Cuenta})
+	a := NewKeyAB(t)
 	b:=usuarios.InsertarAB(a,true)
 	if b {
 		return true
