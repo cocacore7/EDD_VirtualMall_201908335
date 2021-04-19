@@ -1,6 +1,8 @@
 package Servidor
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -806,11 +808,14 @@ func graficarArbolP(t unico, bandera bool) bool{
 func AgregarUsuarios(t Usuarios) []byte{
 	if usuarios == nil{
 		usuarios = NewArbolB(5)
-		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+
+		hash := sha256.Sum256([]byte("1234"))
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: hex.EncodeToString(hash[:]),Cuenta: "Admin"})
 		usuarios.InsertarAB(a,true)
 	}
 	for i:=0;i<len(t.Usuarios);i++{
-		a:= NewKeyAB(t.Usuarios[i])
+		contraseña := sha256.Sum256([]byte(t.Usuarios[i].Password))
+		a := NewKeyAB(Usuario{Dpi: t.Usuarios[i].Dpi,Nombre: t.Usuarios[i].Nombre,Correo: t.Usuarios[i].Correo,Password: hex.EncodeToString(contraseña[:]),Cuenta: t.Usuarios[i].Cuenta})
 		usuarios.InsertarAB(a,true)
 	}
 	crearJson, _ := json.Marshal(t)
@@ -822,10 +827,13 @@ func AgregarUsuarios(t Usuarios) []byte{
 func CrearUsuario(t Usuario) bool{
 	if usuarios == nil{
 		usuarios = NewArbolB(5)
-		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+
+		hash := sha256.Sum256([]byte("1234"))
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: hex.EncodeToString(hash[:]),Cuenta: "Admin"})
 		usuarios.InsertarAB(a,true)
 	}
-	a:= NewKeyAB(t)
+	contraseña := sha256.Sum256([]byte(t.Password))
+	a := NewKeyAB(Usuario{Dpi: t.Dpi,Nombre: t.Nombre,Correo: t.Correo,Password: hex.EncodeToString(contraseña[:]),Cuenta: t.Cuenta})
 	b:=usuarios.InsertarAB(a,true)
 	if b {
 		return true
@@ -839,7 +847,9 @@ func CrearUsuario(t Usuario) bool{
 func BuscarUsuario(t Usuario) Usuario{
 	if usuarios == nil{
 		usuarios = NewArbolB(5)
-		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: "1234",Cuenta: "Admin"})
+
+		hash := sha256.Sum256([]byte("1234"))
+		a := NewKeyAB(Usuario{Dpi: 1234567890101,Nombre: "EDD2021",Correo: "auxiliar@edd.com",Password: hex.EncodeToString(hash[:]),Cuenta: "Admin"})
 		usuarios.InsertarAB(a,true)
 	}
 	a:= NewKeyAB(t)

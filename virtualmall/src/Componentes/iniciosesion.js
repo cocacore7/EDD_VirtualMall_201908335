@@ -3,6 +3,7 @@ import NavBar from "../Componentes/NavBar"
 import "../css/CreateUser.css"
 import axios from "axios"
 import { useHistory } from 'react-router-dom';
+import sha256 from 'crypto-js/sha256';
 
 function InicioSesion() {
     const [dpi, setdpi]=useState("")
@@ -15,7 +16,7 @@ function InicioSesion() {
             "Dpi": parseInt(dpi),
             "Nombre": "",
             "Correo": "",
-            "Password": password,
+            "Password": sha256(password).toString(),
             "Cuenta": ""
         }
         async function obtener() {
@@ -47,7 +48,7 @@ function InicioSesion() {
                 </div>
                 <div className="field">
                     <label>Contraseña</label>
-                    <input type="text" name="Contraseña" placeholder="a1a1a1a1****" onChange={e=>setpassword(e.target.value)} />
+                    <input type="password" name="Contraseña" placeholder="a1a1a1a1****" onChange={e=>setpassword(e.target.value)} />
                 </div>
                 <button className="ui green button" onClick={enviar}>Enviar</button>
             </div>

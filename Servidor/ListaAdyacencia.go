@@ -103,6 +103,7 @@ func (this *ListaAdyacencia) dibujar(){
 	var sc strings.Builder
 	fmt.Fprintf(&sc,"digraph G{\n")
 	fmt.Fprintf(&sc,`layout="circo"`+"\n")
+	fmt.Fprintf(&sc,`edge [dir="both"]`+"\n")
 	e:=this.lista.primero
 	for e!=nil{
 		palabras := strings.Split(e.Nombre," ")

@@ -1,8 +1,9 @@
 package Servidor
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -290,6 +291,7 @@ func(this *ArbolB)buscarNodoAB2(node *NodoArbolB,newkey *key) Usuario{
 			for j:=i-1;j>=0;j--{
 				if node.keys[j].Value.Dpi==newkey.Value.Dpi{
 					if node.keys[j].Value.Password==newkey.Value.Password{
+						fmt.Println(node.keys[j].Value.Password)
 						return node.keys[j].Value
 					}
 					return Usuario{Dpi: 0,Nombre: "NoContra",Correo: "",Password: "",Cuenta: ""}
@@ -363,7 +365,7 @@ func graficarABSC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*Nodo
 				fmt.Fprintf(cad, "{<f%d>DPI: %d|", j, actual.keys[i].Value.Dpi)
 				fmt.Fprintf(cad, "Nombre: %s|", actual.keys[i].Value.Nombre)
 				fmt.Fprintf(cad, "Correo: %s|", actual.keys[i].Value.Correo)
-				fmt.Fprintf(cad, "Password: %s|", actual.keys[i].Value.Password)
+				fmt.Fprintf(cad, "Password: %s|", actual.keys[i].Value.Password[0:10])
 				fmt.Fprintf(cad, "Cuenta: %s}|", actual.keys[i].Value.Cuenta)
 				j++
 
@@ -396,11 +398,11 @@ func graficarABSC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*Nodo
 	}
 }
 
-func (this *ArbolB) GraficarABCS() {
+func (this *ArbolB) GraficarABCS(Llave string) {
 	builder := strings.Builder{}
 	fmt.Fprintf(&builder, "digraph G{\nnode[shape=record]\nedge[color=\"green\"]\n")
 	m := make(map[string]*NodoArbolB)
-	graficarABCS(this.Raiz, &builder, m, nil, 0)
+	graficarABCS(this.Raiz, &builder, m, nil, 0,Llave)
 	fmt.Fprintf(&builder, "}")
 	f, err := os.Create("ArbolCS.dot")
 	if err != nil {
@@ -425,7 +427,7 @@ func (this *ArbolB) GraficarABCS() {
 	ioutil.WriteFile("ArbolCS.png", cmd, os.FileMode(mode))
 }
 
-func graficarABCS(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoArbolB, padre *NodoArbolB, pos int) {
+func graficarABCS(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoArbolB, padre *NodoArbolB, pos int, Llave string) {
 	if actual == nil {
 		return
 	}
@@ -455,14 +457,22 @@ func graficarABCS(actual *NodoArbolB, cad *strings.Builder, arr map[string]*Nodo
 				j++
 
 			} else {
-				cryptoPass := sha256.New()
-				cryptoPass.Write([]byte(actual.keys[i].Value.Password))
-				password := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass.Sum(nil)),"\"","\\\"")[0:10]
-				password = strings.ReplaceAll(password,"}","\\")
-				fmt.Fprintf(cad, "{<f%d>DPI: %d|", j, actual.keys[i].Value.Dpi)
+
+				//Cifrado Con AES
+				llave := []byte(Llave)
+				dpi := []byte(strconv.Itoa(actual.keys[i].Value.Dpi))
+				correo:= []byte(actual.keys[i].Value.Correo)
+				bloque, _ := aes.NewCipher(llave)
+				salt := []byte("123456789123")
+				aesgcmdpi, _ := cipher.NewGCM(bloque)
+				aesgcmcorreo, _ := cipher.NewGCM(bloque)
+				dpicifrado := aesgcmdpi.Seal(nil, salt, dpi, nil)
+				correocifrado := aesgcmcorreo.Seal(nil, salt, correo, nil)
+
+				fmt.Fprintf(cad, "{<f%d>DPI: %d|", j, hex.EncodeToString(dpicifrado)[0:10])
 				fmt.Fprintf(cad, "Nombre: %s|", actual.keys[i].Value.Nombre)
-				fmt.Fprintf(cad, "Correo: %s|", actual.keys[i].Value.Correo)
-				fmt.Fprintf(cad, "Password: %s|", password)
+				fmt.Fprintf(cad, "Correo: %s|", hex.EncodeToString(correocifrado)[0:10])
+				fmt.Fprintf(cad, "Password: %s|", actual.keys[i].Value.Password[0:10])
 				fmt.Fprintf(cad, "Cuenta: %s}|", actual.keys[i].Value.Cuenta)
 				j++
 
@@ -483,10 +493,10 @@ func graficarABCS(actual *NodoArbolB, cad *strings.Builder, arr map[string]*Nodo
 		if actual.keys[i] == nil {
 			break
 		}
-		graficarABCS(actual.keys[i].Izquierdo, cad, arr, actual, ji)
+		graficarABCS(actual.keys[i].Izquierdo, cad, arr, actual, ji,Llave)
 		ji++
 		ji++
-		graficarABCS(actual.keys[i].Derecho, cad, arr, actual, ji)
+		graficarABCS(actual.keys[i].Derecho, cad, arr, actual, ji,Llave)
 		ji++
 		ji--
 	}
@@ -495,11 +505,11 @@ func graficarABCS(actual *NodoArbolB, cad *strings.Builder, arr map[string]*Nodo
 	}
 }
 
-func (this *ArbolB) GraficarABC() {
+func (this *ArbolB) GraficarABC(Llave string) {
 	builder := strings.Builder{}
 	fmt.Fprintf(&builder, "digraph G{\nnode[shape=record]\nedge[color=\"green\"]\n")
 	m := make(map[string]*NodoArbolB)
-	graficarABC(this.Raiz, &builder, m, nil, 0)
+	graficarABC(this.Raiz, &builder, m, nil, 0,Llave)
 	fmt.Fprintf(&builder, "}")
 	f, err := os.Create("ArbolC.dot")
 	if err != nil {
@@ -524,7 +534,7 @@ func (this *ArbolB) GraficarABC() {
 	ioutil.WriteFile("ArbolC.png", cmd, os.FileMode(mode))
 }
 
-func graficarABC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoArbolB, padre *NodoArbolB, pos int) {
+func graficarABC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoArbolB, padre *NodoArbolB, pos int,Llave string) {
 	if actual == nil {
 		return
 	}
@@ -554,36 +564,28 @@ func graficarABC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoA
 				j++
 
 			} else {
-				cryptoPass := sha256.New()
-				cryptoPass.Write([]byte(strconv.Itoa(actual.keys[i].Value.Dpi)))
-				dpi := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass.Sum(nil)),"\"","\\\"")[0:10]
-				dpi = strings.ReplaceAll(dpi,"}","\\")
-				fmt.Fprintf(cad, "{<f%d>DPI: %d|", j, dpi)
+				//Cifrado Con AES
+				llave := []byte(Llave)
+				dpi := []byte(strconv.Itoa(actual.keys[i].Value.Dpi))
+				nombre:= []byte(actual.keys[i].Value.Nombre)
+				correo:= []byte(actual.keys[i].Value.Correo)
+				cuenta:= []byte(actual.keys[i].Value.Cuenta)
+				bloque, _ := aes.NewCipher(llave)
+				salt := []byte("123456789123")
+				aesgcmdpi, _ := cipher.NewGCM(bloque)
+				aesgcmnombre, _ := cipher.NewGCM(bloque)
+				aesgcmcorreo, _ := cipher.NewGCM(bloque)
+				aesgcmcuenta, _ := cipher.NewGCM(bloque)
+				dpicifrado := aesgcmdpi.Seal(nil, salt, dpi, nil)
+				nombrecifrado := aesgcmnombre.Seal(nil, salt, nombre, nil)
+				correocifrado := aesgcmcorreo.Seal(nil, salt, correo, nil)
+				cuentacifrado := aesgcmcuenta.Seal(nil, salt, cuenta, nil)
 
-				cryptoPass2 := sha256.New()
-				cryptoPass2.Write([]byte(actual.keys[i].Value.Nombre))
-				nombre := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass2.Sum(nil)),"\"","\\\"")[0:10]
-				nombre = strings.ReplaceAll(nombre,"}","\\")
-				fmt.Fprintf(cad, "Nombre: %s|", nombre)
-
-				cryptoPass3 := sha256.New()
-				cryptoPass3.Write([]byte(actual.keys[i].Value.Correo))
-				correo := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass3.Sum(nil)),"\"","\\\"")[0:10]
-				correo = strings.ReplaceAll(correo,"}","\\")
-				fmt.Fprintf(cad, "Correo: %s|", correo)
-
-				cryptoPass4 := sha256.New()
-				cryptoPass4.Write([]byte(actual.keys[i].Value.Password))
-				password := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass4.Sum(nil)),"\"","\\\"")[0:10]
-				password = strings.ReplaceAll(password,"}","\\")
-				fmt.Fprintf(cad, "Password: %s|", password)
-
-				cryptoPass5 := sha256.New()
-				cryptoPass5.Write([]byte(actual.keys[i].Value.Cuenta))
-				cuenta := strings.ReplaceAll(base64.URLEncoding.EncodeToString(cryptoPass5.Sum(nil)),"\"","\\\"")[0:10]
-				cuenta = strings.ReplaceAll(cuenta,"}","\\")
-				fmt.Fprintf(cad, "Cuenta: %s}|",cuenta)
-
+				fmt.Fprintf(cad, "{<f%d>DPI: %d|", j, hex.EncodeToString(nombrecifrado)[0:10])
+				fmt.Fprintf(cad, "Nombre: %s|", hex.EncodeToString(dpicifrado)[0:10])
+				fmt.Fprintf(cad, "Correo: %s|", hex.EncodeToString(correocifrado)[0:10])
+				fmt.Fprintf(cad, "Password: %s|", actual.keys[i].Value.Password[0:10])
+				fmt.Fprintf(cad, "Cuenta: %s}|", hex.EncodeToString(cuentacifrado)[0:10])
 				j++
 
 				enlace = true
@@ -603,10 +605,10 @@ func graficarABC(actual *NodoArbolB, cad *strings.Builder, arr map[string]*NodoA
 		if actual.keys[i] == nil {
 			break
 		}
-		graficarABC(actual.keys[i].Izquierdo, cad, arr, actual, ji)
+		graficarABC(actual.keys[i].Izquierdo, cad, arr, actual, ji,Llave)
 		ji++
 		ji++
-		graficarABC(actual.keys[i].Derecho, cad, arr, actual, ji)
+		graficarABC(actual.keys[i].Derecho, cad, arr, actual, ji,Llave)
 		ji++
 		ji--
 	}

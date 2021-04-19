@@ -472,8 +472,11 @@ func grafarbSC(w http.ResponseWriter, r *http.Request){
 }
 
 func grafarbCS(w http.ResponseWriter, r *http.Request){
+	vars:=mux.Vars(r)
+	llave:=vars["Llave"]
+
 	if usuarios !=nil{
-		usuarios.GraficarABCS()
+		usuarios.GraficarABCS(llave)
 		f, _ := os.Open("./ArbolCS.png")
 		reader := bufio.NewReader(f)
 		contenido, _ := ioutil.ReadAll(reader)
@@ -488,8 +491,11 @@ func grafarbCS(w http.ResponseWriter, r *http.Request){
 }
 
 func grafarbC(w http.ResponseWriter, r *http.Request){
+	vars:=mux.Vars(r)
+	llave:=vars["Llave"]
+
 	if usuarios !=nil{
-		usuarios.GraficarABC()
+		usuarios.GraficarABC(llave)
 		f, _ := os.Open("./ArbolC.png")
 		reader := bufio.NewReader(f)
 		contenido, _ := ioutil.ReadAll(reader)
@@ -568,8 +574,8 @@ func Iniciar(){
 
 	//FASE3
 	router.HandleFunc("/ObtenerUsuariosSC", grafarbSC).Methods("GET")
-	router.HandleFunc("/ObtenerUsuariosCS", grafarbCS).Methods("GET")
-	router.HandleFunc("/ObtenerUsuariosC", grafarbC).Methods("GET")
+	router.HandleFunc("/ObtenerUsuariosCS/{Llave}", grafarbCS).Methods("GET")
+	router.HandleFunc("/ObtenerUsuariosC/{Llave}", grafarbC).Methods("GET")
 	router.HandleFunc("/ObtenerGrafo", retgraf).Methods("GET")
 	router.HandleFunc("/CargarUsuarios", usua).Methods("POST")
 	router.HandleFunc("/CrearUsuario", crearusua).Methods("POST")

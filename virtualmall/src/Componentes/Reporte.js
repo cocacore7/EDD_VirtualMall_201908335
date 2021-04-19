@@ -16,6 +16,7 @@ function UserList() {
     const [categoria, setCategoria]=useState('')
     const [dia, setDia]=useState('')
     const [cola, setCola]=useState('')
+    const [llave, setLlave]=useState('')
 
 
     const mostrarASC = async()=>{
@@ -25,15 +26,28 @@ function UserList() {
     }
 
     const mostrarACS = async()=>{
-        const data = await axios.get("http://localhost:3000/ObtenerUsuariosCS")
-        setArbolCS("data:image/png;base64,"+data.data)
-        alert(data.data)
-    }
-
-    const mostrarAC = async()=>{
-        const data = await axios.get("http://localhost:3000/ObtenerUsuariosC")
-        setArbolC("data:image/png;base64,"+data.data)
-        alert(data.data)
+        if (llave === ""){
+            alert("Ingrese una llave")
+        }else{
+            if (llave.length < 32){
+                let pal = ""
+                pal = llave
+                for (let index = llave.length; index < 32; index++){
+                    pal += "a"
+                }
+                const data = await axios.get("http://localhost:3000/ObtenerUsuariosCS/"+pal)
+                setArbolCS("data:image/png;base64,"+data.data)
+                const data2 = await axios.get("http://localhost:3000/ObtenerUsuariosC/"+pal)
+                setArbolC("data:image/png;base64,"+data2.data)
+                alert("Grafos Cargados")
+            }else if (llave.length === 32){
+                const data = await axios.get("http://localhost:3000/ObtenerUsuariosCS/"+llave)
+                setArbolCS("data:image/png;base64,"+data.data)
+                const data2 = await axios.get("http://localhost:3000/ObtenerUsuariosC/"+llave)
+                setArbolC("data:image/png;base64,"+data2.data)
+                alert("Grafos Cargados")
+            }
+        }
     }
 
     const mostrarGrafo = async()=>{
@@ -104,6 +118,9 @@ function UserList() {
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Arbol Cifrado Simple</h1>
+                        <div className="meta">
+                            <input type="text" placeholder="Ingrese Llave De Cifrado" onChange={e=>setLlave(e.target.value)}></input>
+                        </div>
                         <div className="extra">
                             <div className="ui segment green button center" onClick={()=>{mostrarACS()}}>Cargar Arbol</div>
                         </div>
@@ -117,9 +134,7 @@ function UserList() {
                     </div>
                     <div className="content">
                     <h1 style={{color: '#00FFFF'}}>Arbol Cifrado</h1>
-                        <div className="extra">
-                            <div className="ui segment green button center" onClick={()=>{mostrarAC()}}>Cargar Arbol</div>
-                        </div>
+
                     </div>
                 </div>
                 <div className="ui inverted divider" />

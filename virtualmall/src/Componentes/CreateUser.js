@@ -3,6 +3,7 @@ import NavBar from "./NavBar"
 import "../css/CreateUser.css"
 import axios from "axios"
 import { useHistory } from 'react-router-dom';
+import sha256 from 'crypto-js/sha256';
 
 function CreateUser() {
     const [dpi, setdpi]=useState('')
@@ -17,7 +18,7 @@ function CreateUser() {
             "Dpi": parseInt(dpi),
             "Nombre": Nombre,
             "Correo": Correo,
-            "Password": Password,
+            "Password": sha256(Password).toString(),
             "Cuenta": Usuario
         }
         async function obtener() {
@@ -53,7 +54,7 @@ function CreateUser() {
                 </div>
                 <div className="field">
                     <label>Contraseña</label>
-                    <input type="text" name="contraseña" placeholder="a1a1a1a1****" onChange={e=>setPassword(e.target.value)} />
+                    <input type="password" name="contraseña" placeholder="a1a1a1a1****" onChange={e=>setPassword(e.target.value)} />
                 </div>
                 <div className="field">
                     <label>Usuario</label>
