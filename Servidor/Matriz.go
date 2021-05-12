@@ -1,6 +1,8 @@
 package Servidor
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -179,20 +181,56 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
 				if superior.(*ArregloNodoPedido).Cola.primero.Pedido.dia == izquierda.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,izquierda.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
 					izquierda.(*ArregloNodoPedido).Der=arreglonuevo
 					arreglonuevo.Izq = izquierda
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if superior.(*NodoCabeceraHorizontal).dia == izquierda.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,izquierda.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
 					izquierda.(*ArregloNodoPedido).Der=arreglonuevo
 					arreglonuevo.Izq = izquierda
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}else{
@@ -200,6 +238,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
 				if superior.(*ArregloNodoPedido).Cola.primero.Pedido.dia == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
@@ -207,10 +254,28 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if superior.(*NodoCabeceraHorizontal).dia == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
@@ -218,6 +283,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}
@@ -227,11 +301,29 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			insertarPedido(nueva,arreglonuevo.Cola)
 			izquierda.(*NodoCabeceraVertical).Der=arreglonuevo
 			arreglonuevo.Izq = izquierda
+			a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+			for i:=0;i<len(nueva.codigos);i++ {
+				a += ","+strconv.Itoa(nueva.codigos[i])
+			}
+			h := sha256.New()
+			h.Write([]byte(a))
+			sha256Sum := h.Sum(nil)
+			cifrado := fmt.Sprintf("%x", sha256Sum)
+			merklePedidos.Insertar(a,cifrado)
 		}else{
 			tmp:=izquierda.(*NodoCabeceraVertical).Der
 			if reflect.TypeOf(superior).String()=="*Servidor.ArregloNodoPedido"{
 				if superior.(*ArregloNodoPedido).Cola.primero.Pedido.dia == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
@@ -239,10 +331,28 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if superior.(*NodoCabeceraHorizontal).dia == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.dia{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					insertarPedido(nueva,arreglonuevo.Cola)
@@ -250,6 +360,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Izq = izquierda
 					tmp.(*ArregloNodoPedido).Izq = arreglonuevo
 					arreglonuevo.Der = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}
@@ -259,22 +378,58 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
 				if izquierda.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria == superior.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,superior.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
 					insertarPedido(nueva,arreglonuevo.Cola)
 					superior.(*ArregloNodoPedido).Aba=arreglonuevo
 					arreglonuevo.Arr = superior
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if izquierda.(*NodoCabeceraVertical).Categoria == superior.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,superior.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
 					insertarPedido(nueva,arreglonuevo.Cola)
 					superior.(*ArregloNodoPedido).Aba=arreglonuevo
 					arreglonuevo.Arr = superior
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}else{
@@ -282,6 +437,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
 				if izquierda.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
@@ -290,10 +454,28 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if izquierda.(*NodoCabeceraVertical).Categoria == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
@@ -302,6 +484,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}
@@ -312,11 +503,29 @@ func (this *Matriz) Agregar(nueva *Pedido){
 			insertarPedido(nueva,arreglonuevo.Cola)
 			superior.(*NodoCabeceraHorizontal).Aba=arreglonuevo
 			arreglonuevo.Arr = superior
+			a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+			for i:=0;i<len(nueva.codigos);i++ {
+				a += ","+strconv.Itoa(nueva.codigos[i])
+			}
+			h := sha256.New()
+			h.Write([]byte(a))
+			sha256Sum := h.Sum(nil)
+			cifrado := fmt.Sprintf("%x", sha256Sum)
+			merklePedidos.Insertar(a,cifrado)
 		}else{
 			tmp:=superior.(*NodoCabeceraHorizontal).Aba
 			if reflect.TypeOf(izquierda).String()=="*Servidor.ArregloNodoPedido"{
 				if izquierda.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
@@ -325,10 +534,28 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}else{
 				if izquierda.(*NodoCabeceraVertical).Categoria == tmp.(*ArregloNodoPedido).Cola.primero.Pedido.Categoria{
 					insertarPedido(nueva,tmp.(*ArregloNodoPedido).Cola)
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}else{
 					arreglonuevo:=newArregloPedidos("n"+strconv.Itoa(NodoG))
 					NodoG++
@@ -337,6 +564,15 @@ func (this *Matriz) Agregar(nueva *Pedido){
 					arreglonuevo.Arr = superior
 					tmp.(*ArregloNodoPedido).Arr = arreglonuevo
 					arreglonuevo.Aba = tmp
+					a := nueva.Tienda+"," + nueva.Categoria +"," + strconv.Itoa(nueva.dia) +"," + strconv.Itoa(nueva.Calificacion) +"," + strconv.Itoa(nueva.NoPedido)
+					for i:=0;i<len(nueva.codigos);i++ {
+						a += ","+strconv.Itoa(nueva.codigos[i])
+					}
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merklePedidos.Insertar(a,cifrado)
 				}
 			}
 		}

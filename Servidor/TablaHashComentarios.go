@@ -14,6 +14,7 @@ type NodoHash struct {
 	Hora 	int
 	Minuto 	int
 	Seg 	int
+	subarreglo *HashTable
 }
 
 type HashTable struct{
@@ -32,7 +33,7 @@ func(this *HashTable)insertar (nuevo int, valor string){
 	var ahora time.Time
 	ahora = time.Now()
 	mes := obtenernumMes()
-	nuevo_nodo:=NodoHash{nuevo,valor,ahora.Year(),mes,ahora.Day(),ahora.Hour(),ahora.Minute(),ahora.Second()}
+	nuevo_nodo:=NodoHash{nuevo,valor,ahora.Year(),mes,ahora.Day(),ahora.Hour(),ahora.Minute(),ahora.Second(),NewTable()}
 	pos := this.posicion(nuevo, valor)
 	this.arreglo[pos]=&nuevo_nodo
 	this.carga++

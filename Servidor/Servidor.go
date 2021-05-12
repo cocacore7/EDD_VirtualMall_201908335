@@ -592,6 +592,86 @@ func mostrarcomen(w http.ResponseWriter, r *http.Request){
 	}
 }
 
+func merkleT(w http.ResponseWriter, r *http.Request){
+	if vec !=nil{
+		if merkleTienda != nil{
+			Graficararbol(merkleTienda,"MerkleT")
+			f, _ := os.Open("./MerkleT.png")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_, _ = fmt.Fprintf(w, encoded)
+			f.Close()
+		}else{
+			_, _ = fmt.Fprintf(w, "No Hay Arbol Creado De Tiendas")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Hay Tiendas Cargadas")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+func merklePr(w http.ResponseWriter, r *http.Request){
+	if vec !=nil{
+		if merkleProductos != nil{
+			Graficararbol(merkleProductos,"MerklePr")
+			f, _ := os.Open("./MerklePr.png")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_, _ = fmt.Fprintf(w, encoded)
+			f.Close()
+		}else{
+			_, _ = fmt.Fprintf(w, "No Hay Arbol Creado De Tiendas")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Hay Tiendas Cargadas")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+func merklePe(w http.ResponseWriter, r *http.Request){
+	if vec !=nil{
+		if merkleTienda != nil{
+			Graficararbol(merkleTienda,"MerklePe")
+			f, _ := os.Open("./MerklePe.png")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_, _ = fmt.Fprintf(w, encoded)
+			f.Close()
+		}else{
+			_, _ = fmt.Fprintf(w, "No Hay Arbol Creado De Tiendas")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Hay Tiendas Cargadas")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
+func merkleU(w http.ResponseWriter, r *http.Request){
+	if vec !=nil{
+		if merkleTienda != nil{
+			Graficararbol(merkleTienda,"MerkleU")
+			f, _ := os.Open("./MerkleU.png")
+			reader := bufio.NewReader(f)
+			contenido, _ := ioutil.ReadAll(reader)
+			encoded := base64.StdEncoding.EncodeToString(contenido)
+			_, _ = fmt.Fprintf(w, encoded)
+			f.Close()
+		}else{
+			_, _ = fmt.Fprintf(w, "No Hay Arbol Creado De Tiendas")
+		}
+	}else{
+		_, _ = fmt.Fprintf(w, "No Hay Tiendas Cargadas")
+	}
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusFound)
+}
+
 //FASE4
 //---------------------------------------------------------------------------------------------
 
@@ -630,6 +710,10 @@ func Iniciar(){
 	router.HandleFunc("/CargarGrafo", graf).Methods("POST")
 
 	//FASE4
+	router.HandleFunc("/ObtenerMerkleT", merkleT).Methods("GET")
+	router.HandleFunc("/ObtenerMerklePr", merklePr).Methods("GET")
+	router.HandleFunc("/ObtenerMerklePe", merklePe).Methods("GET")
+	router.HandleFunc("/ObtenerMerkleU", merkleU).Methods("GET")
 	router.HandleFunc("/IngresarComentario", comen).Methods("POST")
 	router.HandleFunc("/MostrarComentario", mostrarcomen).Methods("POST")
 

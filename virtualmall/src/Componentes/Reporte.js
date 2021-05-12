@@ -17,7 +17,30 @@ function UserList() {
     const [dia, setDia]=useState('')
     const [cola, setCola]=useState('')
     const [llave, setLlave]=useState('')
+    const [merkleT, setmerkleT]=useState('')
+    const [merklePr, setmerklePr]=useState('')
+    const [merklePe, setmerklePe]=useState('')
+    const [merkleU, setmerkleU]=useState('')
 
+    const mostrarMerkleT = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerMerkleT")
+        setmerkleT("data:image/png;base64,"+data.data)
+    }
+
+    const mostrarMerklePr = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerMerklePr")
+        setmerklePr("data:image/png;base64,"+data.data)
+    }
+
+    const mostrarMerklePe = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerMerklePe")
+        setmerklePe("data:image/png;base64,"+data.data)
+    }
+
+    const mostrarMerkleU = async()=>{
+        const data = await axios.get("http://localhost:3000/ObtenerMerkleU")
+        setmerkleU("data:image/png;base64,"+data.data)
+    }
 
     const mostrarASC = async()=>{
         const data = await axios.get("http://localhost:3000/ObtenerUsuariosSC")
@@ -92,6 +115,58 @@ function UserList() {
         <div className="ImportTiendas">
             <br/>
             <div className="ui inverted segment container items">
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={merkleT} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Merkle Tiendas</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarMerkleT()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={merklePr} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Merkle Productos</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarMerklePr()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={merklePe} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Merkle Pedidos</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarMerklePe()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
+
+                <div className="item">
+                    <div className="ui big segment rounded image">
+                        <img src={merkleU} width={600} height={600}/>
+                    </div>
+                    <div className="content">
+                    <h1 style={{color: '#00FFFF'}}>Arbol Merkle Usuarios</h1>
+                        <div className="extra">
+                            <div className="ui segment green button center" onClick={()=>{mostrarMerkleU()}}>Cargar Arbol</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="ui inverted divider" />
 
                 <div className="item">
                     <div className="ui big segment rounded image">

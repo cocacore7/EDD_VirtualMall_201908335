@@ -5,6 +5,8 @@ import axios from "axios"
 function Comentario(props) {
     const [mensaje, setMensaje] = useState("")
     const [activo, setActivo] = useState(false)
+    const [comentarios, setComentarios] = useState([])
+    const nuevo2 = []
 
     const enviarComentario = async()=> {
         let Usuario = localStorage.getItem('Usuario')

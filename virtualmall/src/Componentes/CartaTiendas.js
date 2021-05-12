@@ -38,6 +38,37 @@ function CartaTiendas(props) {
             Comentario: mensaje
         }
         await axios.post("http://localhost:3000/IngresarComentario",comentario)
+        const comentariosprueba = []
+        const resultado = await axios.post("http://localhost:3000/MostrarComentario",comentario)
+        if(resultado.data == undefined || resultado.data == null ){
+            setComentarios(comentariosprueba)
+        }else{
+            if (resultado.data.Comentarios.length != 0){
+                let Usuario = localStorage.getItem('Usuario')
+                Usuario = JSON.parse(Usuario)
+                for (let i = 0; i < resultado.data.Comentarios.length; i++) {
+                    const miComentario = {
+                        Tipo: "Tienda",
+                        NombreTienda: resultado.data.Comentarios[i].Tienda,
+                        Departamento: resultado.data.Comentarios[i].Departamento,
+                        Calificacion: parseInt(resultado.data.Comentarios[i].Calificacion),
+                        Codigo: parseInt(resultado.data.Comentarios[i].Codigo),
+                        Nombre:'Usuario',
+                        Dpi: parseInt(resultado.data.Comentarios[i].Dpi),
+                        Fecha: resultado.data.Comentarios[i].Fecha,
+                        Hora: resultado.data.Comentarios[i].Hora,
+                        Mensaje: resultado.data.Comentarios[i].Comentario,
+                        SubComments:[]
+                    }
+                    nuevo2.push(miComentario)
+                    
+                }
+                setComentarios(nuevo2)
+                
+            }else{
+                setComentarios(comentariosprueba)
+            }
+        }
     }
 
     const cargarComentarios = async()=> {

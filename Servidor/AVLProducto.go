@@ -1,6 +1,7 @@
 package Servidor
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -114,6 +115,12 @@ func insertarAVLProducto(raiz *nodoproducto, producto producto,id int, bandera *
 	if raiz == nil{
 		raiz = NewNodoProducto(producto, id)
 		*bandera = true
+		a := producto.Nombre+"," + strconv.Itoa(producto.Codigo) +"," + strconv.Itoa(producto.Precio)  +"," + strconv.Itoa(producto.Cantidad) +"," + producto.Descripcion +"," + producto.Imagen + "," + producto.Almacenamiento
+		h := sha256.New()
+		h.Write([]byte(a))
+		sha256Sum := h.Sum(nil)
+		cifrado := fmt.Sprintf("%x", sha256Sum)
+		merkleProductos.Insertar(a,cifrado)
 	}else if producto.Codigo < raiz.producto.Codigo{
 		izq:=insertarAVLProducto(raiz.izq,producto,id,bandera)
 		raiz.izq = izq

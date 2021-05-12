@@ -3,6 +3,7 @@ package Servidor
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
@@ -27,6 +28,12 @@ func NewArbolB(nivel int) *ArbolB{
 func(this ArbolB) InsertarAB(newkey *key, bandera bool) bool {
 	if this.Raiz.keys[0] == nil{
 		this.Raiz.Colocar(0,newkey)
+		a := newkey.Value.Nombre+"," + strconv.Itoa(newkey.Value.Dpi) +"," + newkey.Value.Password +"," + newkey.Value.Cuenta +"," + newkey.Value.Correo
+		h := sha256.New()
+		h.Write([]byte(a))
+		sha256Sum := h.Sum(nil)
+		cifrado := fmt.Sprintf("%x", sha256Sum)
+		merkleUsuario.Insertar(a,cifrado)
 	}else if this.Raiz.keys[0].Izquierdo == nil{
 		lugarinsertado := -1
 		node:=this.Raiz
@@ -36,6 +43,12 @@ func(this ArbolB) InsertarAB(newkey *key, bandera bool) bool {
 			return false
 		}else if lugarinsertado!=-1{
 			if lugarinsertado == node.Max-1{
+				a := newkey.Value.Nombre+"," + strconv.Itoa(newkey.Value.Dpi) +"," + newkey.Value.Password +"," + newkey.Value.Cuenta +"," + newkey.Value.Correo
+				h := sha256.New()
+				h.Write([]byte(a))
+				sha256Sum := h.Sum(nil)
+				cifrado := fmt.Sprintf("%x", sha256Sum)
+				merkleUsuario.Insertar(a,cifrado)
 				medio:= node.Max/2
 				llavecentral:=node.keys[medio]
 				derecho:=NewNodoAB(this.k)
@@ -90,6 +103,12 @@ func(this ArbolB) InsertarAB(newkey *key, bandera bool) bool {
 			fmt.Println("Usuario Con DPI: " + strconv.Itoa(newkey.Value.Dpi)+" Ya Existe")
 			return false
 		}else if indiceColocado==node.Max-1{
+			a := newkey.Value.Nombre+"," + strconv.Itoa(newkey.Value.Dpi) +"," + newkey.Value.Password +"," + newkey.Value.Cuenta +"," + newkey.Value.Correo
+			h := sha256.New()
+			h.Write([]byte(a))
+			sha256Sum := h.Sum(nil)
+			cifrado := fmt.Sprintf("%x", sha256Sum)
+			merkleUsuario.Insertar(a,cifrado)
 			for node.Padre!=nil{
 				indicemedio:=node.Max/2
 				llavecentral:=node.keys[indicemedio]

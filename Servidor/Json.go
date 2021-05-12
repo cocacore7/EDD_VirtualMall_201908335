@@ -20,6 +20,10 @@ var NoPedido int
 var NodoG int
 var idenAño = 0
 var regresoComP []NodoHash
+var merkleTienda *ArbolMerkle
+var merkleProductos *ArbolMerkle
+var merklePedidos *ArbolMerkle
+var merkleUsuario *ArbolMerkle
 
 //---------------------------------------------------------------------------------------------
 //FASE1
@@ -165,6 +169,7 @@ type com struct {
 	Fecha 			string 				`json:"Fecha"`
 	Hora 			string				`json:"Hora"`
 	Comentario 		string 				`json:"Comentario"`
+	SubComments 	[]com				`json:"SubComments"`
 }
 
 type coment struct {
@@ -185,6 +190,10 @@ type coment struct {
 
 //Linealizacion E Inicializacion AVLAños
 func Crear(data Datos){
+	merkleTienda = newArbolMerkle()
+	merkleProductos = newArbolMerkle()
+	merklePedidos = newArbolMerkle()
+	merkleUsuario = newArbolMerkle()
 	vec = make([]lista, 0)
 	Indi = make([]string, 0)
 	Depa = make([]string, 0)
@@ -209,14 +218,44 @@ func Crear(data Datos){
 				t := newTienda(data.Datos[i].Departamentos[j].Tiendas[x].Tiendas, data.Datos[i].Departamentos[j].Tiendas[x].Descripcion, data.Datos[i].Departamentos[j].Tiendas[x].Contacto, data.Datos[i].Departamentos[j].Tiendas[x].Calificacion,data.Datos[i].Departamentos[j].Tiendas[x].Logo)
 				if data.Datos[i].Departamentos[j].Tiendas[x].Calificacion == 1 {
 					insertar(t,l1)
+					a := data.Datos[i].Departamentos[j].Tiendas[x].Tiendas+"," + data.Datos[i].Departamentos[j].Tiendas[x].Descripcion+"," + data.Datos[i].Departamentos[j].Tiendas[x].Contacto+"," + strconv.Itoa(data.Datos[i].Departamentos[j].Tiendas[x].Calificacion)+"," + data.Datos[i].Departamentos[j].Tiendas[x].Logo
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merkleTienda.Insertar(a,cifrado)
 				} else if data.Datos[i].Departamentos[j].Tiendas[x].Calificacion == 2{
 					insertar(t,l2)
+					a := data.Datos[i].Departamentos[j].Tiendas[x].Tiendas+"," + data.Datos[i].Departamentos[j].Tiendas[x].Descripcion+"," + data.Datos[i].Departamentos[j].Tiendas[x].Contacto+"," + strconv.Itoa(data.Datos[i].Departamentos[j].Tiendas[x].Calificacion)+"," + data.Datos[i].Departamentos[j].Tiendas[x].Logo
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merkleTienda.Insertar(a,cifrado)
 				} else if data.Datos[i].Departamentos[j].Tiendas[x].Calificacion == 3{
 					insertar(t,l3)
+					a := data.Datos[i].Departamentos[j].Tiendas[x].Tiendas+"," + data.Datos[i].Departamentos[j].Tiendas[x].Descripcion+"," + data.Datos[i].Departamentos[j].Tiendas[x].Contacto+"," + strconv.Itoa(data.Datos[i].Departamentos[j].Tiendas[x].Calificacion)+"," + data.Datos[i].Departamentos[j].Tiendas[x].Logo
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merkleTienda.Insertar(a,cifrado)
 				} else if data.Datos[i].Departamentos[j].Tiendas[x].Calificacion == 4{
 					insertar(t,l4)
+					a := data.Datos[i].Departamentos[j].Tiendas[x].Tiendas+"," + data.Datos[i].Departamentos[j].Tiendas[x].Descripcion+"," + data.Datos[i].Departamentos[j].Tiendas[x].Contacto+"," + strconv.Itoa(data.Datos[i].Departamentos[j].Tiendas[x].Calificacion)+"," + data.Datos[i].Departamentos[j].Tiendas[x].Logo
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merkleTienda.Insertar(a,cifrado)
 				} else if data.Datos[i].Departamentos[j].Tiendas[x].Calificacion == 5{
 					insertar(t,l5)
+					a := data.Datos[i].Departamentos[j].Tiendas[x].Tiendas+"," + data.Datos[i].Departamentos[j].Tiendas[x].Descripcion+"," + data.Datos[i].Departamentos[j].Tiendas[x].Contacto+"," + strconv.Itoa(data.Datos[i].Departamentos[j].Tiendas[x].Calificacion)+"," + data.Datos[i].Departamentos[j].Tiendas[x].Logo
+					h := sha256.New()
+					h.Write([]byte(a))
+					sha256Sum := h.Sum(nil)
+					cifrado := fmt.Sprintf("%x", sha256Sum)
+					merkleTienda.Insertar(a,cifrado)
 				}
 			}
 			vec = append(vec, *l1)
@@ -942,7 +981,6 @@ func Comenta(t coment) []byte{
 						}else{
 							agregarComentario(a.tienda.productos.raiz,t.Codigo,t)
 						}
-
 					}
 					a=a.sig
 				}
@@ -978,7 +1016,7 @@ func posicionv5(t coment) int{
 	return ter
 }
 
-//Ingresar Comentario
+//Mostrar Comentarios
 func MostrarComenta(t coment) []byte{
 	var regreso Comentarios
 	regreso.Comentarios = make([]com,0)
