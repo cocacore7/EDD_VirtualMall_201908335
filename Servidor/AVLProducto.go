@@ -16,6 +16,7 @@ type producto struct {
 	Cantidad int
 	Imagen string
 	Almacenamiento string
+	comentarioT *HashTable
 }
 
 type nodoproducto struct {
@@ -39,7 +40,7 @@ func NewNodoProducto(producto producto,id int) *nodoproducto{
 }
 
 func NewProducto(nombre string, codigo int, descripcion string, precio int, cantidad int, imagen string, almacenamiento string ) *producto{
-	return &producto{nombre,codigo,descripcion,precio,cantidad,imagen,almacenamiento}
+	return &producto{nombre,codigo,descripcion,precio,cantidad,imagen,almacenamiento,NewTable()}
 }
 
 func rotIIProducto(n *nodoproducto,n1 *nodoproducto) *nodoproducto{
@@ -282,6 +283,32 @@ func SumarStock(raiz *nodoproducto, codigo int) *nodoproducto{
 		raiz.der = der
 	}else if codigo == raiz.producto.Codigo{
 		raiz.producto.Cantidad++
+	}
+	return raiz
+}
+
+func agregarComentario(raiz *nodoproducto, codigo int, comentario coment) *nodoproducto{
+	if codigo < raiz.producto.Codigo{
+		izq := agregarComentario(raiz.izq,codigo,comentario)
+		raiz.izq = izq
+	}else if codigo > raiz.producto.Codigo{
+		der := agregarComentario(raiz.der,codigo,comentario)
+		raiz.der = der
+	}else if codigo == raiz.producto.Codigo{
+		 raiz.producto.comentarioT.insertar(comentario.Dpi,comentario.Comentario)
+	}
+	return raiz
+}
+
+func BuscarComentario(raiz *nodoproducto, codigo int) *nodoproducto{
+	if codigo < raiz.producto.Codigo{
+		izq := BuscarComentario(raiz.izq,codigo)
+		raiz.izq = izq
+	}else if codigo > raiz.producto.Codigo{
+		der := BuscarComentario(raiz.der,codigo)
+		raiz.der = der
+	}else if codigo == raiz.producto.Codigo{
+		regresoComP =  raiz.producto.comentarioT.Buscar()
 	}
 	return raiz
 }

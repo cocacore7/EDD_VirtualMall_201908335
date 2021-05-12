@@ -16,9 +16,7 @@ function CargarArch() {
         if (tiendas ===null){
             alert("No Hay Archivos Cargados")
         }else{
-            const data = await axios.post("http://localhost:3000/cargartienda",tiendas[0])
-
-            alert(JSON.stringify(data.data))
+            await axios.post("http://localhost:3000/cargartienda",tiendas[0])
         }
     }
 
@@ -26,9 +24,7 @@ function CargarArch() {
         if (pedidos ===null){
             alert("No Hay Archivos Cargados")
         }else{
-            const data = await axios.post("http://localhost:3000/cargarPedido",pedidos[0])
-
-            alert(JSON.stringify(data.data))
+            await axios.post("http://localhost:3000/cargarPedido",pedidos[0])
         }
     }
 
@@ -36,8 +32,7 @@ function CargarArch() {
         if (inventario ===null){
             alert("No Hay Archivos Cargados")
         }else{
-            const data = await axios.post("http://localhost:3000/cargarInventario",inventario[0])
-            alert(JSON.stringify(data.data))
+            await axios.post("http://localhost:3000/cargarInventario",inventario[0])
         }
     }
 
@@ -45,8 +40,7 @@ function CargarArch() {
         if (usuarios ===null){
             alert("No Hay Archivos Cargados")
         }else{
-            const data = await axios.post("http://localhost:3000/CargarUsuarios",usuarios[0])
-            alert(JSON.stringify(data.data))
+            await axios.post("http://localhost:3000/CargarUsuarios",usuarios[0])
         }
     }
 
@@ -54,17 +48,16 @@ function CargarArch() {
         if (grafo ===null){
             alert("No Hay Archivos Cargados")
         }else{
-            const data = await axios.post("http://localhost:3000/CargarGrafo",grafo[0])
-            alert(JSON.stringify(data.data))
+            await axios.post("http://localhost:3000/CargarGrafo",grafo[0])
         }
     }
     
     return (
         <>
         <NavBar 
-            colores={["red","green","blue","grey"]}
-            opciones={["Cargar Archivos","Reportes","Cerrar Sesion", "Eliminar Mi Cuenta"]}
-            url={["/cargar","/reporte","/iniciosesion","/iniciosesion"]}
+            colores={["red","green","yellow","blue","grey"]}
+            opciones={["Cargar Archivos","Reportes","Tiendas","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/cargar","/reporte","/listaTR","/iniciosesion","/iniciosesion"]}
             activo={"red"}
         />
         <div className="ImportTiendas">

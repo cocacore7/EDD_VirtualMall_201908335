@@ -3,6 +3,8 @@ import { BrowserRouter as Router,Redirect,Route } from "react-router-dom";
 import Reporte from "./Componentes/Reporte"
 import ImportTiendas from "./Componentes/ImportTiendas"
 import ImportProductos from "./Componentes/ImportProductos"
+import ImportTiendasR from "./Componentes/ImportTiendasR"
+import ImportProductosR from "./Componentes/ImportProductosR"
 import CarritoCompras from "./Componentes/CarritoCompras"
 import CargarArch from "./Componentes/CargarArch"
 import Iniciosesion from "./Componentes/iniciosesion"
@@ -17,7 +19,9 @@ function App() {
       </Route>
       <Route path="/reporte" component={Reporte} />
       <Route path="/listaT" component={ImportTiendas} />
+      <Route path="/listaTR" component={ImportTiendasR} />
       <Route path="/listaP" component={ImportProductos} />
+      <Route path="/listaPR" component={ImportProductosR} />
       <Route path="/carrito" component={CarritoCompras} />
       <Route path="/cargar" component={CargarArch} />
       <Route path="/iniciosesion" component={Iniciosesion} />

@@ -19,6 +19,7 @@ var Depa []string
 var NoPedido int
 var NodoG int
 var idenAño = 0
+var regresoComP []NodoHash
 
 //---------------------------------------------------------------------------------------------
 //FASE1
@@ -145,6 +146,38 @@ type Enlace struct {
 }
 
 //FASE3
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//FASE4
+
+type Comentarios struct {
+	Comentarios []com	`json:"Comentarios"`
+}
+
+type com struct {
+	Tipo 			string 				`json:"Tipo"`
+	Tienda 			string 				`json:"Tienda"`
+	Departamento 	string 				`json:"Departamento"`
+	Calificacion 	int    				`json:"Calificacion"`
+	Codigo 			int 				`json:"Codigo"`
+	Dpi 			int 				`json:"Dpi"`
+	Fecha 			string 				`json:"Fecha"`
+	Hora 			string				`json:"Hora"`
+	Comentario 		string 				`json:"Comentario"`
+}
+
+type coment struct {
+	Tipo 			string 				`json:"Tipo"`
+	Tienda 			string 				`json:"Tienda"`
+	Departamento 	string 				`json:"Departamento"`
+	Calificacion 	int    				`json:"Calificacion"`
+	Codigo 			int 				`json:"Codigo"`
+	Dpi 			int 				`json:"Dpi"`
+	Comentario 		string 				`json:"Comentario"`
+}
+
+//FASE4
 //---------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------
@@ -887,4 +920,122 @@ func dibujarGrafo() bool{
 }
 
 //FASE3
+//---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//FASE4
+
+//Ingresar Comentario
+func Comenta(t coment) []byte{
+	if vec!=nil{
+		i := posicionv5(t)
+		if vec[i].Vacio(){
+			crearJson, _ := json.Marshal("No existen Tiendas Cargadas")
+			return crearJson
+		} else{
+			if i < len(vec){
+				a := vec[i].primero
+				for a != nil{
+					if t.Tienda == a.tienda.nombre{
+						if t.Tipo == "Tienda"{
+							a.tienda.comentarioT.insertar(t.Dpi,t.Comentario)
+						}else{
+							agregarComentario(a.tienda.productos.raiz,t.Codigo,t)
+						}
+
+					}
+					a=a.sig
+				}
+			}
+		}
+		crearJson, _ := json.Marshal(t)
+		return crearJson
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
+}
+
+func posicionv5(t coment) int{
+	indice := strings.ToUpper(string(t.Tienda[0]))
+	var i int
+	var c int
+	for a:=0;a<len(Indi);a++{
+		if Indi[a] == indice{
+			i = a
+			break
+		}
+	}
+
+	for b:=0;b<len(Depa);b++{
+		if t.Departamento == Depa[b]{
+			c = b
+			break
+		}
+	}
+	seg:=(i*len(Depa)) + c
+	ter:= (seg*5)+ t.Calificacion-1
+	return ter
+}
+
+//Ingresar Comentario
+func MostrarComenta(t coment) []byte{
+	var regreso Comentarios
+	regreso.Comentarios = make([]com,0)
+	if vec!=nil{
+		i := posicionv5(t)
+		if vec[i].Vacio(){
+			crearJson, _ := json.Marshal("No existen Tiendas Cargadas")
+			return crearJson
+		} else{
+			if i < len(vec){
+				a := vec[i].primero
+				for a != nil{
+					if t.Tienda == a.tienda.nombre{
+						if t.Tipo == "Tienda"{
+							reg :=a.tienda.comentarioT.Buscar()
+							for b:=0;b<len(reg);b++ {
+								var c com
+								c.Tienda = "Tienda"
+								c.Tienda = t.Tienda
+								c.Departamento = t.Departamento
+								c.Calificacion = t.Calificacion
+								c.Codigo = t.Codigo
+								c.Comentario = reg[b].valor
+								c.Dpi = reg[b].hash
+								c.Fecha = strconv.Itoa(reg[b].Año) + "/" + strconv.Itoa(reg[b].Mes) + "/" + strconv.Itoa(reg[b].Dia)
+								c.Hora = strconv.Itoa(reg[b].Hora) + ":" + strconv.Itoa(reg[b].Minuto) + ":" + strconv.Itoa(reg[b].Seg)
+								regreso.Comentarios = append(regreso.Comentarios, c)
+							}
+						}else{
+							BuscarComentario(a.tienda.productos.raiz,t.Codigo)
+							for b:=0;b<len(regresoComP);b++ {
+								var c com
+								c.Tienda = "Producto"
+								c.Tienda = t.Tienda
+								c.Departamento = t.Departamento
+								c.Calificacion = t.Calificacion
+								c.Codigo = t.Codigo
+								c.Comentario = regresoComP[b].valor
+								c.Dpi = regresoComP[b].hash
+								c.Fecha = strconv.Itoa(regresoComP[b].Año) + "/" + strconv.Itoa(regresoComP[b].Mes) + "/" + strconv.Itoa(regresoComP[b].Dia)
+								c.Hora = strconv.Itoa(regresoComP[b].Hora) + ":" + strconv.Itoa(regresoComP[b].Minuto) + ":" + strconv.Itoa(regresoComP[b].Seg)
+								regreso.Comentarios = append(regreso.Comentarios, c)
+							}
+						}
+
+					}
+					a=a.sig
+				}
+			}
+		}
+		crearJson, _ := json.Marshal(regreso)
+		return crearJson
+	}else{
+		crearJson, _ := json.Marshal("No Hay Tiendas Cargadas")
+		return crearJson
+	}
+}
+
+//FASE4
 //---------------------------------------------------------------------------------------------

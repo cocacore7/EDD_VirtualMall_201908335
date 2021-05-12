@@ -9,6 +9,7 @@ type tienda struct {
 	calif 		int
 	logo 		string
 	productos 	*ArbolProducto
+	comentarioT *HashTable
 }
 
 type nodo struct {
@@ -23,7 +24,7 @@ type lista struct {
 }
 
 func newTienda(nombre string, descripcion string, contacto string, calif int,logo string) *tienda{
-	return &tienda{nombre,descripcion,contacto, calif,logo, NewArbolProducto()}
+	return &tienda{nombre,descripcion,contacto, calif,logo, NewArbolProducto(), NewTable()}
 }
 
 func newNodo(t *tienda) *nodo {

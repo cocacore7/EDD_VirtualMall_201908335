@@ -21,11 +21,13 @@ function InicioSesion() {
         }
         async function obtener() {
             const data = await axios.post("http://localhost:3000/BuscarUsuario",usuario);
-            alert( JSON.stringify(data.data));
             if (data.data.Cuenta === "Admin"){
                 history.push("/cargar")
+                alert( "Bienvenido Administrador :D");
             }else if(data.data.Cuenta === "Usuario"){
+                localStorage.setItem('Usuario',JSON.stringify(usuario))
                 history.push("/listaT")
+                alert( "Bienvenido Usuario :D");
             }
         }
         obtener()

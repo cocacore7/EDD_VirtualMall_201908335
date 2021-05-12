@@ -22,7 +22,6 @@ function UserList() {
     const mostrarASC = async()=>{
         const data = await axios.get("http://localhost:3000/ObtenerUsuariosSC")
         setArbolSC("data:image/png;base64,"+data.data)
-        alert(data.data)
     }
 
     const mostrarACS = async()=>{
@@ -53,13 +52,11 @@ function UserList() {
     const mostrarGrafo = async()=>{
         const data = await axios.get("http://localhost:3000/ObtenerGrafo")
         setGrafo("data:image/png;base64,"+data.data)
-        alert(data.data)
     }
 
     useEffect(() => {
         async function mostarAños() {
             const data = await axios.get("http://localhost:3000/GrafoAños") 
-            alert(data.data)
             setaños("data:image/png;base64,"+data.data)
         }
         mostarAños()
@@ -70,29 +67,26 @@ function UserList() {
 
         const data = await axios.get("http://localhost:3000/GrafoMesesAños/"+añom)
         setMes("data:image/png;base64,"+data.data)
-        alert(data.data)
     }
 
     const mostrarMatriz = async(event)=>{
 
         const data = await axios.get("http://localhost:3000/GrafoMatrizMesesAños/"+mesm)
         setMatriz("data:image/png;base64,"+data.data)
-        alert(data.data)
     }
 
     const mostrarCola = async(event)=>{
 
         const data = await axios.get("http://localhost:3000/GrafoColaMatrizMesesAños/"+dia+"/"+categoria)
         setCola("data:image/png;base64,"+data.data)
-        alert(data.data)
     }
 
     return (
         <>
         <NavBar 
-            colores={["red","green","blue","grey"]}
-            opciones={["Cargar Archivos","Reportes","Cerrar Sesion", "Eliminar Mi Cuenta"]}
-            url={["/cargar","/reporte","/iniciosesion","/iniciosesion"]}
+            colores={["red","green","yellow","blue","grey"]}
+            opciones={["Cargar Archivos","Reportes","Tiendas","Cerrar Sesion", "Eliminar Mi Cuenta"]}
+            url={["/cargar","/reporte","/listaTR","/iniciosesion","/iniciosesion"]}
             activo={"green"}
         />
         <div className="ImportTiendas">

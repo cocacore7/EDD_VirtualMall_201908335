@@ -26,11 +26,6 @@ function ImportProductos() {
             tienda.push(JSON.parse(CarTienda))
         }
         console.log(tienda)
-        const peticionImagen = {
-            "Departamento": tienda[0].Departamento,
-            "Nombre": tienda[0].Tienda,
-            "Calificacion": tienda[0].Calificacion
-        }
         async function obtener() {
             const data = await axios.get("http://localhost:3000/guardarProductos");
             console.log(data.data)
@@ -67,8 +62,6 @@ function ImportProductos() {
             }else{
                 alert("No Existen Productos Cargados")
             }
-            const data2 = await axios.post("http://localhost:3000/graficarArbolProductos",peticionImagen);
-            setImagenP("data:image/png;base64,"+data2.data)
         }
         obtener()
 
@@ -86,10 +79,6 @@ function ImportProductos() {
             <div className="ImportTiendas">
                 <br></br>
                 <div className="ui segment red button center container" onClick={()=>{handleClick()}}>Regresar</div>
-                <br></br>
-                <div className="ui centered container">
-                    <img src={imagenProducto} class="ui fluid centered rounded image "/>
-                </div>
                 <br></br>
                 <MosaicoProductos productos={productos} />
                 <br></br>

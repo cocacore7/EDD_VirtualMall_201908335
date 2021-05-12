@@ -23,7 +23,7 @@ function CreateUser() {
         }
         async function obtener() {
             const data = await axios.post("http://localhost:3000/CrearUsuario",usuario);
-            alert( JSON.stringify(data.data));
+            alert("Usuario Creado Con Exito");
             history.push("/iniciosesion")
         }
         obtener()

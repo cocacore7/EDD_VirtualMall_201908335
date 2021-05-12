@@ -549,6 +549,52 @@ func retgraf(w http.ResponseWriter, r *http.Request){
 //---------------------------------------------------------------------------------------------
 
 
+//---------------------------------------------------------------------------------------------
+//FASE4
+
+//Comentarios
+func comen(w http.ResponseWriter, r *http.Request){
+	var t coment
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	if vec != nil{
+		a:= Comenta(t)
+		var v coment
+		_ = json.Unmarshal(a, &v)
+		_ = json.NewEncoder(w).Encode(v)
+	}else{
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
+//Mostrar Comentarios
+func mostrarcomen(w http.ResponseWriter, r *http.Request){
+	var t coment
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		_, _ = fmt.Fprintf(w, "Error al insertar")
+	}
+	w.Header().Set("Content-Type","applicattion/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.Unmarshal(body, &t)
+	if vec != nil{
+		a:= MostrarComenta(t)
+		var v Comentarios
+		_ = json.Unmarshal(a, &v)
+		_ = json.NewEncoder(w).Encode(v)
+	}else{
+		_ = json.NewEncoder(w).Encode("No Hay Tiendas Cargadas")
+	}
+}
+
+//FASE4
+//---------------------------------------------------------------------------------------------
+
 //ENDPOINTS
 
 func Iniciar(){
@@ -583,6 +629,9 @@ func Iniciar(){
 	router.HandleFunc("/EliminarUsuario", elimusua).Methods("POST")
 	router.HandleFunc("/CargarGrafo", graf).Methods("POST")
 
+	//FASE4
+	router.HandleFunc("/IngresarComentario", comen).Methods("POST")
+	router.HandleFunc("/MostrarComentario", mostrarcomen).Methods("POST")
 
 	handler := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":3000",handler))
